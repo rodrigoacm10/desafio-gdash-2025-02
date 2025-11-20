@@ -1,0 +1,78 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - '5672:5672' # conexões AMQP
+      - '15672:15672' # painel web do RabbitMQ
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: api
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - rabbitmq
+    env_file:
+      - ./.env
+    ports:
+      - '${API_PORT:-3000}:3000' # porta externa configurável via .env
+    # se quiser, pode forçar só algumas envs:
+    # environment:
+    #   - MONGO_URI=${MONGO_URI}
+    #   - RABBITMQ_URL=${RABBITMQ_URL}
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: frontend
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - api
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - '${FRONTEND_PORT:-5173}:5173'
+
+  # collector:
+  #   build:
+  #     context: ./collector
+  #     dockerfile: Dockerfile
+  #   container_name: collector
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - rabbitmq
+  #   env_file:
+  #     - ./.env
+  #   # se for rodar em loop, deixa assim; se quiser rodar "on demand",
+  #   # pode trocar o entrypoint/cmd no Dockerfile do Python
+
+  # worker:
+  #   build:
+  #     context: ./worker
+  #     dockerfile: Dockerfile
+  #   container_name: worker
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - rabbitmq
+  #     - api
+  #   env_file:
+  #     - ./.env
+
+volumes:
+  mongo_data:
