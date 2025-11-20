@@ -18,23 +18,23 @@ services:
       - '5672:5672' # conexões AMQP
       - '15672:15672' # painel web do RabbitMQ
 
-  api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: api
-    restart: unless-stopped
-    depends_on:
-      - mongo
-      - rabbitmq
-    env_file:
-      - ./.env
-    ports:
-      - '${API_PORT:-3000}:3000' # porta externa configurável via .env
-    # se quiser, pode forçar só algumas envs:
-    # environment:
-    #   - MONGO_URI=${MONGO_URI}
-    #   - RABBITMQ_URL=${RABBITMQ_URL}
+  # api:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: api
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - mongo
+  #     - rabbitmq
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - '${API_PORT:-3000}:3000' # porta externa configurável via .env
+  #   # se quiser, pode forçar só algumas envs:
+  #   # environment:
+  #   #   - MONGO_URI=${MONGO_URI}
+  #   #   - RABBITMQ_URL=${RABBITMQ_URL}
 
   # frontend:
   #   build:
