@@ -197,8 +197,9 @@ def main_loop():
         try:
             print("[PYTHON] Buscando dados no OpenWeather...")
             raw = fetch_openweather_onecall()
+            print("[RAW] ->", raw)
             snapshot = build_snapshot(raw)
-            print("snapshot ->", snapshot)
+            print("[SNAPSHOT] ->", snapshot)
             publish_snapshot(snapshot)
             print("[PYTHON] OK. Aguardando 1h para próxima coleta.")
         except Exception as e:
