@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './infra/jwt-auth.guard';
 import { JwtTokenService } from './infra/jwt-token.service';
 import { TOKEN_SERVICE } from './domain/token.service';
 import { AuthController } from './interfaces/http/auth.controller';
+import { CreateUserUseCase } from 'src/users/application/use-cases/create-user.use-case';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AuthController } from './interfaces/http/auth.controller';
     LoginUseCase,
     JwtStrategy,
     JwtAuthGuard,
+    CreateUserUseCase,
     {
       provide: TOKEN_SERVICE,
       useClass: JwtTokenService,

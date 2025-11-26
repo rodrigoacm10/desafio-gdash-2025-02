@@ -29,9 +29,8 @@ export class SaveWeatherSnapshotUseCase {
   ) {}
 
   async execute(input: SaveWeatherSnapshotInput): Promise<WeatherSnapshot> {
-    // Monta o aggregate da camada de domínio
     const snapshot = new WeatherSnapshot(
-      null, // id será gerado pelo Mongo
+      null,
       input.provider,
       input.type,
       input.location,
@@ -39,7 +38,7 @@ export class SaveWeatherSnapshotUseCase {
       input.current,
       input.hourly,
       input.daily,
-      undefined, // createdAt será definido pelo timestamps do schema
+      undefined,
     );
 
     return this.repo.save(snapshot);

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import {
   IWeatherSnapshotRepository,
+  ListWeatherLogsParams,
+  ListWeatherLogsResult,
   WEATHER_SNAPSHOT_REPOSITORY,
 } from '../../domain/weather-snapshot.repository';
 import { WeatherSnapshot } from '../../domain/weather-snapshot.entity';
@@ -109,34 +111,50 @@ export class WeatherSnapshotMongoRepository
     return this.mapToDomain(created);
   }
 
-  // async findLatest(): Promise<WeatherSnapshot | null> {
   async findLatest(): Promise<WeatherSnapshot | null> {
     const doc = await this.model.findOne().sort({ createdAt: -1 }).exec();
-    // return doc ? this.mapToDomain(doc) : { data: 0};
     return doc ? this.mapToDomain(doc) : null;
   }
 
-  async list(limit = 50): Promise<WeatherSnapshot[]> {
+  async listLogs(
+    params: ListWeatherLogsParams,
+  ): Promise<ListWeatherLogsResult> {
+    const limit = params.limit ?? 50;
+
+    const query: any = {};
+
+    if (params.startDate || params.endDate) {
+      query.createdAt = {};
+      if (params.startDate) {
+        query.createdAt.$gte = params.startDate;
+      }
+      if (params.endDate) {
+        query.createdAt.$lte = params.endDate;
+      }
+    }
+
+    if (params.cursor) {
+      query._id = { $lt: new Types.ObjectId(params.cursor) };
+    }
+
     const docs = await this.model
-      .find()
-      .sort({ createdAt: -1 })
-      .limit(limit)
+      .find(query)
+      .sort({ _id: -1 })
+      .limit(limit + 1)
       .exec();
 
-    return docs.map((d) => this.mapToDomain(d));
-  }
+    const hasNextPage = docs.length > limit;
+    const pageDocs = hasNextPage ? docs.slice(0, limit) : docs;
 
-  async findByDateRange(start: Date, end: Date): Promise<WeatherSnapshot[]> {
-    const docs = await this.model
-      .find({
-        createdAt: {
-          $gte: start,
-          $lte: end,
-        },
-      })
-      .sort({ createdAt: 1 })
-      .exec();
+    const items = pageDocs.map((d) => this.mapToDomain(d));
 
-    return docs.map((d) => this.mapToDomain(d));
+    const nextCursor = hasNextPage
+      ? pageDocs[pageDocs.length - 1]._id.toString()
+      : undefined;
+
+    return {
+      items,
+      nextCursor,
+    };
   }
 }

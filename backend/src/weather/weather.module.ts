@@ -10,6 +10,7 @@ import { WeatherSnapshotMongoRepository } from './infra/mongo/weather-snapshot-m
 import { GetLatestSnapshotUseCase } from './application/use-cases/get-latest-weather-snapshot.use-case';
 import { SaveWeatherSnapshotUseCase } from './application/use-cases/save-weather-snapshot.use-case';
 import { WeatherController } from './interfaces/http/weather.controller';
+import { ListWeatherLogsUseCase } from './application/use-cases/list-weather-logs.use-case';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { WeatherController } from './interfaces/http/weather.controller';
     },
     SaveWeatherSnapshotUseCase,
     GetLatestSnapshotUseCase,
+    ListWeatherLogsUseCase,
   ],
   exports: [WEATHER_SNAPSHOT_REPOSITORY],
 })
