@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,12 +17,18 @@ async function bootstrap() {
     }),
   );
 
-  // 🔹 Swagger config
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
+
+  app.use(cookieParser());
+
   const config = new DocumentBuilder()
     .setTitle('GDash API')
     .setDescription('API do desafio (users, weather, etc.)')
     .setVersion('1.0.0')
-    .addBearerAuth() // já deixa pronto pro JWT depois
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

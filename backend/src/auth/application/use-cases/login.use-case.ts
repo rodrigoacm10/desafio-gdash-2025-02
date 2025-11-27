@@ -1,3 +1,4 @@
+// backend/src/auth/application/use-cases/login.use-case.ts
 import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -5,8 +6,12 @@ import {
   type IUserRepository,
   USER_REPOSITORY,
 } from '../../../users/domain/user.repository';
-import { type ITokenService, TOKEN_SERVICE } from '../../domain/token.service';
-import { User } from '../../../users/domain/user.entity';
+import {
+  type ITokenService,
+  TOKEN_SERVICE,
+  TokenPayload,
+  UserRole,
+} from '../../domain/token.service';
 
 export interface LoginInput {
   email: string;
@@ -15,11 +20,12 @@ export interface LoginInput {
 
 export interface LoginResult {
   accessToken: string;
+  refreshToken: string;
   user: {
     id: string;
     name: string;
     email: string;
-    role: string;
+    role: UserRole;
   };
 }
 
@@ -49,21 +55,23 @@ export class LoginUseCase {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = {
-      sub: user.id,
+    const payload: TokenPayload = {
+      sub: user.id!,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole, // cast aqui, se o User.role ainda for string
     };
 
-    const accessToken = await this.tokenService.sign(payload);
+    const accessToken = await this.tokenService.signAccess(payload);
+    const refreshToken = await this.tokenService.signRefresh(payload);
 
     return {
       accessToken,
+      refreshToken,
       user: {
         id: user.id!,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role as UserRole,
       },
     };
   }

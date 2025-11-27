@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { UsersModule } from '../users/users.module';
 import { LoginUseCase } from './application/use-cases/login.use-case';
+import { RefreshTokensUseCase } from './application/use-cases/refresh-tokens.use-case';
+import { LogoutUseCase } from './application/use-cases/logout.use-case';
 import { JwtStrategy } from './infra/jwt.strategy';
 import { JwtAuthGuard } from './infra/jwt-auth.guard';
 import { JwtTokenService } from './infra/jwt-token.service';
@@ -21,8 +23,9 @@ import { CreateUserUseCase } from 'src/users/application/use-cases/create-user.u
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService): JwtModuleOptions => {
-        const secret = config.get<string>('JWT_SECRET') ?? 'changeme';
-        const expiresIn = config.get('JWT_EXPIRES_IN') ?? '1h';
+        const secret =
+          config.get<string>('JWT_ACCESS_SECRET') ?? 'changeme-access';
+        const expiresIn = config.get('JWT_ACCESS_EXPIRES_IN') ?? '15m';
         return {
           secret,
           signOptions: {
@@ -35,6 +38,8 @@ import { CreateUserUseCase } from 'src/users/application/use-cases/create-user.u
   controllers: [AuthController],
   providers: [
     LoginUseCase,
+    RefreshTokensUseCase,
+    LogoutUseCase,
     JwtStrategy,
     JwtAuthGuard,
     CreateUserUseCase,

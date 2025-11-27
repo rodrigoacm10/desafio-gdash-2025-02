@@ -53,4 +53,6 @@ export class WeatherController {
       nextCursor: result.nextCursor,
     };
   }
+
+  // via fazer um post/get que passe o ID do snapshot, isso vai fazer um find para ver os dados vai ver se tem algum insight relacionado ao snapshot, caso não tenha vai criar um insight, depois disso vai relacionar o insight com o snapshot, e vai retornar os dados do insight relacionado desse id de snapshot.
 }

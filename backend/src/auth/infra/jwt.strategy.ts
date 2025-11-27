@@ -12,7 +12,7 @@ export interface JwtPayload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
-    const secret = config.get<string>('JWT_SECRET');
+    const secret = config.get<string>('JWT_ACCESS_SECRET') ?? 'changeme-access';
 
     if (!secret) {
       throw new Error('JWT_SECRET is not defined in environment variables');
