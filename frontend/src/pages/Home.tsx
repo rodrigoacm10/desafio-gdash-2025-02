@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 
-const Home = () => {
+export const Home = () => {
   return (
     <div className="bg-black min-h-screen">
       <div className="bg-white flex justify-center">
@@ -25,5 +25,3 @@ const Home = () => {
     </div>
   )
 }
-
-export default Home

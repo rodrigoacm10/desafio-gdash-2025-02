@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import AuthDefault from '@/components/AuthDefault'
+import AuthDefault from '@/components/layouts/AuthDefault'
 
 const loginSchema = z.object({
   email: z.string().min(1, 'E-mail é obrigatório').email('E-mail inválido'),
@@ -15,7 +15,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>
 
-const Login = () => {
+export const Login = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -88,5 +88,3 @@ const Login = () => {
     </AuthDefault>
   )
 }
-
-export default Login

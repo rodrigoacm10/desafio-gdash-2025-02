@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import DashboardLayout from '@/components/layouts/DashboardLayout'
 
 type ProtectedRouteProps = {
   roles?: string[]
@@ -20,5 +21,9 @@ export const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
     return <Navigate to="/forbidden" replace />
   }
 
-  return <Outlet />
+  return (
+    <DashboardLayout>
+      <Outlet />
+    </DashboardLayout>
+  )
 }
