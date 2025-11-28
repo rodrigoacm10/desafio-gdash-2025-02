@@ -6,6 +6,7 @@ import { Login } from '../pages/Login'
 import { Dashboard } from '../pages/Dashboard'
 import { ProtectedRoute } from './ProtectedRoute'
 import { Users } from '@/pages/Users'
+import { Snapshots } from '@/pages/Snapshots'
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
         children: [
           { path: 'dashboard', element: <Dashboard /> },
           { path: 'users', element: <Users /> },
+          { path: 'snapshots', element: <Snapshots /> },
         ],
       },
 

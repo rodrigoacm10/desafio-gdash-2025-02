@@ -1,14 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react'
+import { createContext, useEffect, useState, type ReactNode } from 'react'
 import { api } from '../lib/api'
 import type { AuthResponse, AuthUser } from '../@types/auth'
 
-type AuthContextType = {
+export type AuthContextType = {
   user: AuthUser | null
   accessToken: string | null
   loading: boolean
@@ -17,7 +11,7 @@ type AuthContextType = {
   logout: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 type Props = {
   children: ReactNode
@@ -125,12 +119,4 @@ export const AuthProvider = ({ children }: Props) => {
       {children}
     </AuthContext.Provider>
   )
-}
-
-export const useAuth = (): AuthContextType => {
-  const ctx = useContext(AuthContext)
-  if (!ctx) {
-    throw new Error('useAuth deve ser usado dentro de AuthProvider')
-  }
-  return ctx
 }

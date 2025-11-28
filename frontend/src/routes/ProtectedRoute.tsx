@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
 import DashboardLayout from '@/components/layouts/DashboardLayout'
+import { useAuth } from '@/hooks/useAuth'
 
 type ProtectedRouteProps = {
   roles?: string[]
