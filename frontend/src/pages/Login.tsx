@@ -1,71 +1,91 @@
-import { type FormEvent, useState } from 'react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import AuthDefault from '@/components/AuthDefault'
+
+const loginSchema = z.object({
+  email: z.string().min(1, 'E-mail é obrigatório').email('E-mail inválido'),
+  password: z.string().min(4, 'Senha deve ter pelo menos 4 caracteres'),
+})
+
+type LoginFormData = z.infer<typeof loginSchema>
 
 const Login = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const [email, setEmail] = useState('admin@example.com')
-  const [password, setPassword] = useState('123456')
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: 'admin@example.com',
+      password: '123456',
+    },
+  })
+
+  const onSubmit = async (data: LoginFormData) => {
+    setApiError(null)
 
     try {
-      await login(email, password)
+      await login(data.email, data.password)
       navigate('/dashboard')
     } catch (err) {
       console.error(err)
-      setError('Credenciais inválidas ou erro ao autenticar.')
-    } finally {
-      setLoading(false)
+      setApiError('Credenciais inválidas ou erro ao autenticar.')
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white shadow-md rounded px-8 pt-6 pb-8"
+    <AuthDefault title="Entre na sua conta" func={handleSubmit(onSubmit)}>
+      {apiError && <p className="mb-4 text-sm text-red-600">{apiError}</p>}
+
+      <label className="block mb-4">
+        <span className="block  font-medium mb-1">E-mail</span>
+        <Input
+          type="email"
+          placeholder="seuemail@gmail.com"
+          className="!px-4 !py-5 !text-[16px]"
+          {...register('email')}
+        />
+
+        {errors.email && (
+          <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+        )}
+      </label>
+
+      <label className="block mb-6">
+        <span className="block text-sm font-medium mb-1">Senha</span>
+        <Input
+          type="password"
+          placeholder="******"
+          className="!px-4 !py-5 !text-[16px]"
+          {...register('password')}
+        />
+
+        {errors.password && (
+          <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
+        )}
+      </label>
+
+      <Button
+        disabled={isSubmitting}
+        type="submit"
+        size="lg"
+        className="text-[16px] w-full py-5 px-4  bg-[#156e6a] text-white font-semibold hover:bg-[#115c58] disabled:opacity-70"
       >
-        <h1 className="text-xl font-bold mb-4 text-center">Login</h1>
-
-        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
-
-        <label className="block mb-4">
-          <span className="block text-sm font-medium mb-1">E-mail</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="shadow border rounded w-full py-2 px-3"
-          />
-        </label>
-
-        <label className="block mb-6">
-          <span className="block text-sm font-medium mb-1">Senha</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="shadow border rounded w-full py-2 px-3"
-          />
-        </label>
-
-        <button
-          disabled={loading}
-          type="submit"
-          className="w-full py-2 px-4 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-70"
-        >
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-      </form>
-    </div>
+        {isSubmitting ? 'Entrando...' : 'Entrar'}
+      </Button>
+    </AuthDefault>
   )
 }
 
