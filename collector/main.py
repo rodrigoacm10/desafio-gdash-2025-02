@@ -16,6 +16,7 @@ RABBITMQ_URL = os.getenv("RABBITMQ_URL")
 RABBITMQ_QUEUE = os.getenv("RABBITMQ_QUEUE", "weather_snapshots")
 
 LOCATION_CITY = os.getenv("LOCATION_CITY", "Recife")
+LOCATION_STATE = os.getenv("LOCATION_STATE", "Pernambuco")
 LOCATION_COUNTRY = os.getenv("LOCATION_COUNTRY", "BR")
 LOCATION_TIMEZONE = os.getenv("LOCATION_TIMEZONE", "America/Recife")
 LOCATION_TZ_OFFSET = int(os.getenv("LOCATION_TZ_OFFSET", "-10800"))
@@ -156,6 +157,7 @@ def build_snapshot(raw: dict) -> dict:
         "type": "snapshot",
         "location": {
             "city": LOCATION_CITY,
+            "state": LOCATION_STATE,
             "country": LOCATION_COUNTRY,
             "lat": raw["lat"],
             "lon": raw["lon"],
@@ -197,7 +199,7 @@ def main_loop():
         try:
             print("[PYTHON] Buscando dados no OpenWeather...")
             raw = fetch_openweather_onecall()
-            print("[RAW] ->", raw)
+            # print("[RAW] ->", raw)
             snapshot = build_snapshot(raw)
             print("[SNAPSHOT] ->", snapshot)
             publish_snapshot(snapshot)

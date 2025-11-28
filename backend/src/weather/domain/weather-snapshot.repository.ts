@@ -17,6 +17,8 @@ export interface IWeatherSnapshotRepository {
 
   findLatest(): Promise<WeatherSnapshot | null>;
 
+  findById(id: string): Promise<WeatherSnapshot | null>;
+
   listLogs(params: ListWeatherLogsParams): Promise<ListWeatherLogsResult>;
 }
 

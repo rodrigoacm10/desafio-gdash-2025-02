@@ -46,6 +46,7 @@ export interface WeatherDailyEntry {
 
 export interface WeatherSnapshotLocation {
   city: string;
+  state: string;
   country: string;
   lat: number;
   lon: number;

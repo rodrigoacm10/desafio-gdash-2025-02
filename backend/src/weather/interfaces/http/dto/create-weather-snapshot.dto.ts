@@ -155,6 +155,9 @@ class LocationDto {
   city: string;
 
   @IsString()
+  state: string;
+
+  @IsString()
   country: string;
 
   @IsNumber()

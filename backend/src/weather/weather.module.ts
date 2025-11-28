@@ -11,6 +11,7 @@ import { GetLatestSnapshotUseCase } from './application/use-cases/get-latest-wea
 import { SaveWeatherSnapshotUseCase } from './application/use-cases/save-weather-snapshot.use-case';
 import { WeatherController } from './interfaces/http/weather.controller';
 import { ListWeatherLogsUseCase } from './application/use-cases/list-weather-logs.use-case';
+import { GetSnapshotUseCase } from './application/use-cases/get-weather-snapshot.use-case';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ListWeatherLogsUseCase } from './application/use-cases/list-weather-log
     },
     SaveWeatherSnapshotUseCase,
     GetLatestSnapshotUseCase,
+    GetSnapshotUseCase,
     ListWeatherLogsUseCase,
   ],
   exports: [WEATHER_SNAPSHOT_REPOSITORY],

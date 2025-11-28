@@ -13,6 +13,8 @@ func handleMessage(authClient *AuthClient, d *amqp.Delivery) error {
     ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
     defer cancel()
 
+	log.Printf("[WORKER] Enviando snapshot para API. Tamanho: %d bytes", len(d.Body))
+
     resp, err := authClient.postWithAuth(ctx, "/weather/snapshot", d.Body)
     if err != nil {
         return fmt.Errorf("erro ao enviar snapshot para API: %w", err)

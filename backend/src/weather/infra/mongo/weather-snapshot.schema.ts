@@ -66,6 +66,7 @@ const DailyEntrySchemaDef = SchemaFactory.createForClass(DailyEntrySchema);
 @Schema({ _id: false })
 class LocationSchema {
   @Prop() city: string;
+  @Prop() state: string;
   @Prop() country: string;
   @Prop() lat: number;
   @Prop() lon: number;

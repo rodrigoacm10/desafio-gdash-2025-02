@@ -27,6 +27,7 @@ export class WeatherSnapshotMongoRepository
       doc.type,
       {
         city: doc.location.city,
+        state: doc.location.state,
         country: doc.location.country,
         lat: doc.location.lat,
         lon: doc.location.lon,
@@ -156,5 +157,10 @@ export class WeatherSnapshotMongoRepository
       items,
       nextCursor,
     };
+  }
+
+  async findById(id: string): Promise<WeatherSnapshot | null> {
+    const doc = await this.model.findById(id).exec();
+    return doc ? this.mapToDomain(doc) : null;
   }
 }

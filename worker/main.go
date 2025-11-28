@@ -62,7 +62,9 @@ func main() {
 
             if err := handleMessage(authClient, &d); err != nil {
                 log.Printf("[WORKER] Erro ao processar mensagem: %v\n", err)
-                if err := d.Nack(false, true); err != nil {
+
+                // Por enquanto, não reenfileira. Evita loop infinito
+                if err := d.Nack(false, false); err != nil {
                     log.Printf("[WORKER] Erro ao dar Nack: %v\n", err)
                 }
                 continue

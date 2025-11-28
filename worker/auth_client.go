@@ -1,40 +1,40 @@
 package main
 
 import (
-    "bytes"
-    "context"
-    "encoding/json"
-    "fmt"
-    "log"
-    "net/http"
-    "net/http/cookiejar"
-    "sync"
-    "time"
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"net/http/cookiejar"
+	"sync"
+	"time"
 )
 
 type LoginRequest struct {
-    Email    string `json:"email"`
-    Password string `json:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type AuthResponse struct {
-    AccessToken string `json:"accessToken"`
-    User        struct {
-        ID    string `json:"id"`
-        Name  string `json:"name"`
-        Email string `json:"email"`
-        Role  string `json:"role"`
-    } `json:"user"`
+	AccessToken string `json:"accessToken"`
+	User        struct {
+		ID    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+		Role  string `json:"role"`
+	} `json:"user"`
 }
 
 type AuthClient struct {
-    apiURL     string
-    email      string
-    password   string
-    httpClient *http.Client
+	apiURL     string
+	email      string
+	password   string
+	httpClient *http.Client
 
-    mu          sync.Mutex
-    accessToken string
+	mu          sync.Mutex
+	accessToken string
 }
 
 func NewAuthClient(apiURL, email, password string) *AuthClient {
@@ -44,21 +44,24 @@ func NewAuthClient(apiURL, email, password string) *AuthClient {
 	}
 
 	return &AuthClient{
-		apiURL: apiURL,
-		email:  email,
+		apiURL:   apiURL,
+		email:    email,
 		password: password,
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
-			Jar:     jar, // 🔑 importante para guardar o cookie HttpOnly do refresh token
+			Jar:     jar, // guarda o cookie HttpOnly do refresh token
 		},
 	}
 }
 
+// Corrigido: não segura o mutex enquanto chama login (evita deadlock)
 func (a *AuthClient) ensureToken(ctx context.Context) error {
+	// Lê o token com lock curto
 	a.mu.Lock()
-	defer a.mu.Unlock()
+	hasToken := a.accessToken != ""
+	a.mu.Unlock()
 
-	if a.accessToken != "" {
+	if hasToken {
 		return nil
 	}
 
