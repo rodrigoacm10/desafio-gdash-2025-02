@@ -43,7 +43,7 @@ export class WeatherController {
     return this.getLatest.execute();
   }
 
-  @Get(':id')
+  @Get('snapshot/:id')
   @ApiOperation({ summary: 'Finds a snapshot by ID' })
   findOne(@Param('id') id: string): Promise<WeatherSnapshot | null> {
     return this.getSnapshot.execute(id);

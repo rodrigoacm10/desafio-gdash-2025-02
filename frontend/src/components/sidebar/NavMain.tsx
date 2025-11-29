@@ -27,21 +27,22 @@ export function NavMain({
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {items.map((item) => (
-            <Link to={item.url} key={item.title}>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  className={`px-3 py-5 transition duration-200 ${
-                    item.url === pathname
-                      ? 'bg-[#156e6a] text-white hover:bg-[#115c58] hover:text-white'
-                      : 'hover:bg-[#156e6a]/20'
-                  }`}
-                  tooltip={item.title}
-                >
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton
+                asChild
+                className={`px-3 py-5 transition duration-200 ${
+                  item.url === pathname
+                    ? 'bg-[#156e6a] text-white hover:bg-[#115c58] hover:text-white'
+                    : 'hover:bg-[#156e6a]/20'
+                }`}
+                tooltip={item.title}
+              >
+                <Link to={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </Link>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
