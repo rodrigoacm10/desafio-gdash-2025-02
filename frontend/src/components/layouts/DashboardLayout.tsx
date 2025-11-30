@@ -23,7 +23,7 @@ const DashboardLayout = ({ children }: React.ComponentProps<'div'>) => {
       <SidebarInset>
         <AppHeader />
         <div className="rounded-b-2xl h-full bg-white p-6">
-          <main>{children}</main>
+          <main className="h-full">{children}</main>
         </div>
       </SidebarInset>
     </SidebarProvider>
