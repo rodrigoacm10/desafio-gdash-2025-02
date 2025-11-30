@@ -12,6 +12,9 @@ import { SaveWeatherSnapshotUseCase } from './application/use-cases/save-weather
 import { WeatherController } from './interfaces/http/weather.controller';
 import { ListWeatherLogsUseCase } from './application/use-cases/list-weather-logs.use-case';
 import { GetSnapshotUseCase } from './application/use-cases/get-weather-snapshot.use-case';
+import { WeatherExportMapper } from './application/services/weather-export.mapper';
+import { ExportWeatherCurrentCsvUseCase } from './application/use-cases/export-weather-current-csv.use-case';
+import { ExportWeatherCurrentXlsxUseCase } from './application/use-cases/export-weather-current-xlsx.use-case';
 
 @Module({
   imports: [
@@ -32,6 +35,10 @@ import { GetSnapshotUseCase } from './application/use-cases/get-weather-snapshot
     GetLatestSnapshotUseCase,
     GetSnapshotUseCase,
     ListWeatherLogsUseCase,
+
+    WeatherExportMapper,
+    ExportWeatherCurrentCsvUseCase,
+    ExportWeatherCurrentXlsxUseCase,
   ],
   exports: [WEATHER_SNAPSHOT_REPOSITORY],
 })
