@@ -10,7 +10,7 @@ type RainProbabilityHourlyChartProps = {
   hourly: HourlyItem[]
 }
 
-// const PRIMARY = '#25a9e0'
+const PRIMARY = '#156e6a'
 
 const formatHour = (iso: string) => {
   if (!iso) return ''
@@ -39,7 +39,7 @@ export const RainProbabilityHourlyChart: React.FC<
       xKey="time"
       valueKey="rainProbabilityPercent"
       valueLabel="Rain probability (%)"
-      fill="rgba(37, 169, 224, 0.6)"
+      fill={PRIMARY}
     />
   )
 }

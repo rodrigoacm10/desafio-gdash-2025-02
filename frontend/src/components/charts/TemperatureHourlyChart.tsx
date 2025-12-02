@@ -11,7 +11,7 @@ type TemperatureHourlyChartProps = {
   hourly: HourlyItem[]
 }
 
-const PRIMARY = '#25a9e0'
+const PRIMARY = '#156e6a'
 const SECONDARY = '#f97316'
 
 const formatHour = (iso: string) => {

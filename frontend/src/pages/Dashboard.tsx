@@ -118,7 +118,7 @@ export const Dashboard = () => {
 
         <div className="flex gap-2">
           <Button
-            className="py-5 px-4 font-bold cursor-pointer"
+            className="py-5 px-4 font-bold cursor-pointer text-[#156e6a]"
             variant="outline"
             type="button"
             onClick={() =>
@@ -152,13 +152,13 @@ export const Dashboard = () => {
 
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div className="space-y-1">
-          <p className="text-lg font-bold break-words text-[#25a9e0] sm:text-xl md:text-2xl">
+          <p className="text-lg font-bold break-words text-[#156e6a] sm:text-xl md:text-2xl">
             <span>
               {headerDate} - {location.city}
             </span>
           </p>
 
-          <p className="text-sm text-[#7bb6e0] sm:text-base">
+          <p className="text-sm text-[#209e98] sm:text-base">
             ({location.state ? `${location.state} - ` : ''}
             {location.country})
           </p>
