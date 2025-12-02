@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useSearchParams } from 'react-router-dom'
 
 import { InfoCard } from '@/components/InfoCard'
 import { api } from '@/lib/api'
@@ -7,23 +8,36 @@ import { formatDate } from '@/utils/formatters/formatData'
 import DailyForecast from '@/components/DailyForecast'
 import { TemperatureHourlyChart } from '@/components/charts/TemperatureHourlyChart'
 import { RainProbabilityHourlyChart } from '@/components/charts/RainProbabilityHourlyChart'
+import { Button } from '@/components/ui/button'
+import { Download } from 'lucide-react'
+import { handleDownload } from '@/hooks/downloadExport'
 
 export const Dashboard = () => {
+  const [searchParams] = useSearchParams()
+  const snapshotId = searchParams.get('snapshotId')
+
   const {
     data: weatherData,
     isLoading,
     isError,
     error,
   } = useQuery<WeatherSnapshot, Error>({
-    queryKey: ['weather-latest'],
+    queryKey: ['weather-snapshot', snapshotId ?? 'latest'],
     queryFn: async () => {
+      if (snapshotId) {
+        const response = await api.get<WeatherSnapshot>(
+          `/weather/snapshot/${snapshotId}`,
+        )
+        return response.data
+      }
+
       const response = await api.get<WeatherSnapshot>('/weather/latest')
       return response.data
     },
   })
 
   if (isLoading) {
-    return <p>Carregando último snapshot de clima...</p>
+    return <p>Carregando snapshot de clima...</p>
   }
 
   if (isError) {
@@ -43,7 +57,7 @@ export const Dashboard = () => {
     )
   }
 
-  const { location, current, fetchedAt } = weatherData
+  const { location, current, fetchedAt, id: currentSnapshotId } = weatherData
 
   const headerDate = fetchedAt
     ? formatDate(fetchedAt)
@@ -63,10 +77,42 @@ export const Dashboard = () => {
     (current.rainProbability ?? 0) * 100,
   )
 
-  console.log('WEATHER DATA ->', weatherData)
-
   return (
     <div className="h-full">
+      <div className="flex justify-end gap-4 mb-2">
+        <Button
+          className="py-5 px-4 font-bold cursor-pointer"
+          variant="outline"
+          type="button"
+          onClick={() =>
+            handleDownload(
+              'xlsx',
+              snapshotId ?? currentSnapshotId
+                ? snapshotId ?? currentSnapshotId
+                : undefined,
+            )
+          }
+        >
+          XLSX <Download className="ml-2 h-4 w-4" />
+        </Button>
+
+        <Button
+          className="bg-[#156e6a] hover:bg-[#115c58] py-5 px-4 font-bold cursor-pointer"
+          type="button"
+          onClick={() =>
+            handleDownload(
+              'csv',
+              snapshotId ?? currentSnapshotId
+                ? snapshotId ?? currentSnapshotId
+                : undefined,
+            )
+          }
+        >
+          CSV <Download className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Header de localização / data */}
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div className="space-y-1">
           <p className="text-lg font-bold break-words text-[#25a9e0] sm:text-xl md:text-2xl">
@@ -79,6 +125,15 @@ export const Dashboard = () => {
             ({location.state ? `${location.state} - ` : ''}
             {location.country})
           </p>
+
+          {(snapshotId || currentSnapshotId) && (
+            <p className="text-xs text-muted-foreground">
+              Snapshot ID:{' '}
+              <span className="font-mono">
+                {snapshotId ?? currentSnapshotId}
+              </span>
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground sm:text-sm md:text-base">

@@ -15,6 +15,15 @@ import { GetSnapshotUseCase } from './application/use-cases/get-weather-snapshot
 import { WeatherExportMapper } from './application/services/weather-export.mapper';
 import { ExportWeatherCurrentCsvUseCase } from './application/use-cases/export-weather-current-csv.use-case';
 import { ExportWeatherCurrentXlsxUseCase } from './application/use-cases/export-weather-current-xlsx.use-case';
+import { WEATHER_INSIGHT_REPOSITORY } from './domain/weather-insight.repository';
+import { WeatherInsightMongoRepository } from './infra/mongo/weather-insight-mongo.repository';
+import { WEATHER_INSIGHTS_LLM } from './application/ports/weather-insights-llm.port';
+import { OpenAIWeatherInsightsProvider } from './infra/openai/openai-weather-insights.provider';
+import { GetOrCreateWeatherInsightUseCase } from './application/use-cases/get-or-create-weather-insight.use-case';
+import {
+  WeatherInsightDocument,
+  WeatherInsightSchema,
+} from './infra/mongo/weather-insight.schema';
 
 @Module({
   imports: [
@@ -23,6 +32,7 @@ import { ExportWeatherCurrentXlsxUseCase } from './application/use-cases/export-
         name: WeatherSnapshotDocument.name,
         schema: WeatherSnapshotSchema,
       },
+      { name: WeatherInsightDocument.name, schema: WeatherInsightSchema },
     ]),
   ],
   controllers: [WeatherController],
@@ -30,6 +40,14 @@ import { ExportWeatherCurrentXlsxUseCase } from './application/use-cases/export-
     {
       provide: WEATHER_SNAPSHOT_REPOSITORY,
       useClass: WeatherSnapshotMongoRepository,
+    },
+    {
+      provide: WEATHER_INSIGHT_REPOSITORY,
+      useClass: WeatherInsightMongoRepository,
+    },
+    {
+      provide: WEATHER_INSIGHTS_LLM,
+      useClass: OpenAIWeatherInsightsProvider,
     },
     SaveWeatherSnapshotUseCase,
     GetLatestSnapshotUseCase,
@@ -39,6 +57,8 @@ import { ExportWeatherCurrentXlsxUseCase } from './application/use-cases/export-
     WeatherExportMapper,
     ExportWeatherCurrentCsvUseCase,
     ExportWeatherCurrentXlsxUseCase,
+
+    GetOrCreateWeatherInsightUseCase,
   ],
   exports: [WEATHER_SNAPSHOT_REPOSITORY],
 })

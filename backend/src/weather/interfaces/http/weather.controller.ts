@@ -22,6 +22,8 @@ import { ExportWeatherCurrentCsvUseCase } from 'src/weather/application/use-case
 import { ExportWeatherCurrentXlsxUseCase } from 'src/weather/application/use-cases/export-weather-current-xlsx.use-case';
 import { type Response } from 'express';
 import { NotFoundException } from '@nestjs/common';
+import { GetOrCreateWeatherInsightUseCase } from 'src/weather/application/use-cases/get-or-create-weather-insight.use-case';
+import { WeatherInsight } from 'src/weather/domain/weather-insight.entity';
 
 @ApiTags('weather')
 @ApiBearerAuth()
@@ -35,6 +37,7 @@ export class WeatherController {
     private readonly getSnapshot: GetSnapshotUseCase,
     private readonly exportCurrentCsv: ExportWeatherCurrentCsvUseCase,
     private readonly exportCurrentXlsx: ExportWeatherCurrentXlsxUseCase,
+    private readonly getOrCreateInsight: GetOrCreateWeatherInsightUseCase,
   ) {}
 
   @Post('snapshot')
@@ -132,5 +135,17 @@ export class WeatherController {
     res.send(result.buffer);
   }
 
-  // via fazer um post/get que passe o ID do snapshot, isso vai fazer um find para ver os dados vai ver se tem algum insight relacionado ao snapshot, caso não tenha vai criar um insight, depois disso vai relacionar o insight com o snapshot, e vai retornar os dados do insight relacionado desse id de snapshot.
+  @Get('snapshot/insight/:id')
+  @ApiOperation({
+    summary:
+      'Retorna o insight relacionado ao snapshot. Se não existir, gera via ChatGPT, salva e retorna.',
+  })
+  async getOrCreateInsightRoute(
+    @Param('id') id: string,
+  ): Promise<WeatherInsight> {
+    return this.getOrCreateInsight.execute(id);
+  }
+  // vou utilizar a api do chatgpt
+
+  // via fazer um post/get que passe o ID do snapshot (snapshot/insight/:id), isso vai fazer um find para ver se tem algum insight relacionado ao snapshot, caso não tenha vai criar um insight baseado nos dados do snapshot, depois disso vai relacionar o insight com o snapshot, e vai retornar os dados do insight relacionado desse id de snapshot.
 }

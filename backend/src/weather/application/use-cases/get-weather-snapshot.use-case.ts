@@ -12,7 +12,7 @@ export class GetSnapshotUseCase {
   ) {}
 
   async execute(id: string) {
-    const snapshot = this.repo.findById(id);
+    const snapshot = await this.repo.findById(id);
     if (!snapshot) throw new NotFoundException('Weather snapshot not found');
     return snapshot;
   }
