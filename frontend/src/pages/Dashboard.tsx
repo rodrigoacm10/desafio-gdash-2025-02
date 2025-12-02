@@ -11,6 +11,10 @@ import { RainProbabilityHourlyChart } from '@/components/charts/RainProbabilityH
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
 import { handleDownload } from '@/hooks/downloadExport'
+import type { WeatherInsight } from '@/@types/weather-insights'
+import { WeatherSummary } from '@/components/insights/WeatherSummary'
+import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
+import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
 
 export const Dashboard = () => {
   const [searchParams] = useSearchParams()
@@ -32,6 +36,28 @@ export const Dashboard = () => {
       }
 
       const response = await api.get<WeatherSnapshot>('/weather/latest')
+      return response.data
+    },
+  })
+
+  const effectiveSnapshotId = snapshotId ?? weatherData?.id
+
+  const {
+    data: insight,
+    isLoading: isInsightLoading,
+    isError: isInsightError,
+    error: insightError,
+  } = useQuery<WeatherInsight, Error>({
+    queryKey: ['weather-insight', effectiveSnapshotId],
+    enabled: !!effectiveSnapshotId,
+    queryFn: async () => {
+      if (!effectiveSnapshotId) {
+        throw new Error('Snapshot ID não disponível para buscar insight.')
+      }
+
+      const response = await api.get<WeatherInsight>(
+        `/weather/snapshot/insight/${effectiveSnapshotId}`,
+      )
       return response.data
     },
   })
@@ -77,42 +103,53 @@ export const Dashboard = () => {
     (current.rainProbability ?? 0) * 100,
   )
 
+  const comfortIndexText =
+    insight?.metrics?.comfortIndex != null ? insight.metrics.comfortIndex : '--'
+
   return (
     <div className="h-full">
-      <div className="flex justify-end gap-4 mb-2">
-        <Button
-          className="py-5 px-4 font-bold cursor-pointer"
-          variant="outline"
-          type="button"
-          onClick={() =>
-            handleDownload(
-              'xlsx',
-              snapshotId ?? currentSnapshotId
-                ? snapshotId ?? currentSnapshotId
-                : undefined,
-            )
-          }
-        >
-          XLSX <Download className="ml-2 h-4 w-4" />
-        </Button>
+      <div className="flex justify-between gap-4 mb-2">
+        <div className="font-bold flex items-center gap-2 text-xl">
+          <p className="text-muted-foreground">Comfort:</p>
+          <p className="text-[#156e6a]">
+            {isInsightLoading ? '...' : comfortIndexText}
+          </p>
+        </div>
 
-        <Button
-          className="bg-[#156e6a] hover:bg-[#115c58] py-5 px-4 font-bold cursor-pointer"
-          type="button"
-          onClick={() =>
-            handleDownload(
-              'csv',
-              snapshotId ?? currentSnapshotId
-                ? snapshotId ?? currentSnapshotId
-                : undefined,
-            )
-          }
-        >
-          CSV <Download className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            className="py-5 px-4 font-bold cursor-pointer"
+            variant="outline"
+            type="button"
+            onClick={() =>
+              handleDownload(
+                'xlsx',
+                snapshotId ?? currentSnapshotId
+                  ? snapshotId ?? currentSnapshotId
+                  : undefined,
+              )
+            }
+          >
+            XLSX <Download className="ml-2 h-4 w-4" />
+          </Button>
+
+          <Button
+            className="bg-[#156e6a] hover:bg-[#115c58] py-5 px-4 font-bold cursor-pointer"
+            type="button"
+            onClick={() =>
+              handleDownload(
+                'csv',
+                snapshotId ?? currentSnapshotId
+                  ? snapshotId ?? currentSnapshotId
+                  : undefined,
+              )
+            }
+          >
+            CSV <Download className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Header de localização / data */}
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div className="space-y-1">
           <p className="text-lg font-bold break-words text-[#25a9e0] sm:text-xl md:text-2xl">
@@ -179,6 +216,13 @@ export const Dashboard = () => {
         />
       </div>
 
+      <WeatherSummary
+        summary={insight?.summary}
+        isLoading={isInsightLoading}
+        isError={isInsightError}
+        error={insightError instanceof Error ? insightError : undefined}
+      />
+
       <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
         <div className="min-h-60">
           <TemperatureHourlyChart hourly={weatherData.hourly} />
@@ -187,6 +231,20 @@ export const Dashboard = () => {
         <div className="min-h-60">
           <RainProbabilityHourlyChart hourly={weatherData.hourly} />
         </div>
+
+        <InsightsAccordion
+          insights={insight?.insights}
+          isLoading={isInsightLoading}
+          isError={isInsightError}
+          error={insightError instanceof Error ? insightError : undefined}
+        />
+
+        <AlertsAccordion
+          alerts={insight?.alerts}
+          isLoading={isInsightLoading}
+          isError={isInsightError}
+          error={insightError instanceof Error ? insightError : undefined}
+        />
       </div>
 
       <div className="mt-4 overflow-x-auto rounded-2xl bg-card">
