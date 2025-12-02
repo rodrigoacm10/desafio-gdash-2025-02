@@ -1,19 +1,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import AuthDefault from '@/components/layouts/AuthDefault'
 import { useAuth } from '@/hooks/useAuth'
-
-const loginSchema = z.object({
-  email: z.string().min(1, 'E-mail é obrigatório').email('E-mail inválido'),
-  password: z.string().min(4, 'Senha deve ter pelo menos 4 caracteres'),
-})
-
-type LoginFormData = z.infer<typeof loginSchema>
+import { loginSchema, type LoginFormData } from '@/schemas/loginSchema'
 
 export const Login = () => {
   const { login } = useAuth()
@@ -85,6 +78,25 @@ export const Login = () => {
       >
         {isSubmitting ? 'Entrando...' : 'Entrar'}
       </Button>
+      <div className="flex justify-between">
+        <Link to="/">
+          <Button
+            variant="link"
+            className="text-[#156e6a] font-bold hover:text-[#115c58] p-0"
+          >
+            voltar
+          </Button>
+        </Link>
+
+        <Link to="/login">
+          <Button
+            variant="link"
+            className="text-[#156e6a] font-bold hover:text-[#115c58] p-0"
+          >
+            criar conta
+          </Button>
+        </Link>
+      </div>
     </AuthDefault>
   )
 }

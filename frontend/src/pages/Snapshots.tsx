@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { buildDateRange } from '@/utils/buildDateRange'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { filtersSchema, type FiltersForm } from '@/schemas/filtersSchema'
 
 const PAGE_LIMIT = 10
 
@@ -19,24 +19,6 @@ type WeatherLogsResponse = {
 
 export const Snapshots = () => {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
-
-  const filtersSchema = z
-    .object({
-      startDate: z.string().optional().or(z.literal('')),
-      endDate: z.string().optional().or(z.literal('')),
-    })
-    .refine(
-      (data) => {
-        if (!data.startDate || !data.endDate) return true
-        return new Date(data.startDate) <= new Date(data.endDate)
-      },
-      {
-        message: 'Data inicial não pode ser maior que a data final.',
-        path: ['endDate'],
-      },
-    )
-
-  type FiltersForm = z.infer<typeof filtersSchema>
 
   const {
     register,

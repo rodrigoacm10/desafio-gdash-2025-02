@@ -7,6 +7,7 @@ import { Dashboard } from '../pages/Dashboard'
 import { ProtectedRoute } from './ProtectedRoute'
 import { Users } from '@/pages/Users'
 import { Snapshots } from '@/pages/Snapshots'
+import { Register } from '@/pages/Register'
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +16,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'login', element: <Login /> },
+      { path: 'register', element: <Register /> },
 
       {
         element: <ProtectedRoute />,
