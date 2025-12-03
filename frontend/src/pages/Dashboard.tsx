@@ -12,8 +12,10 @@ import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
 import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
 import { useWeatherSnapshotInfos } from '@/hooks/useWeatherSnapshotInfos'
 import { useWeatherSnapshotInsights } from '@/hooks/useWeatherSnapshotInsights'
+import { useState } from 'react'
 
 export const Dashboard = () => {
+  const [generateInsights, setGenerateInsights] = useState(false)
   const [searchParams] = useSearchParams()
   const snapshotId = searchParams.get('snapshotId')
 
@@ -30,7 +32,9 @@ export const Dashboard = () => {
     isLoading: isInsightLoading,
     isError: isInsightError,
     error: insightError,
-  } = useWeatherSnapshotInsights({ snapshotId: effectiveSnapshotId })
+  } = useWeatherSnapshotInsights({
+    snapshotId: generateInsights ? effectiveSnapshotId : undefined,
+  })
 
   if (isLoading) {
     return <p>Carregando snapshot de clima...</p>
@@ -76,16 +80,30 @@ export const Dashboard = () => {
   const comfortIndexText =
     insight?.metrics?.comfortIndex != null ? insight.metrics.comfortIndex : '--'
 
+  const handleGenerateInsights = () => {
+    setGenerateInsights(true)
+  }
+
   return (
     <div className="h-full">
       <div className="flex justify-between gap-4 mb-2">
-        <div className="font-bold flex items-center gap-2 text-xl">
-          <p className="text-muted-foreground">Comfort:</p>
-          <p className="text-[#156e6a]">
-            {isInsightLoading ? '...' : comfortIndexText}
-          </p>
-        </div>
+        {!generateInsights && (
+          <Button
+            className="bg-[#156e6a] hover:bg-[#115c58] py-5 px-4 font-bold cursor-pointer"
+            onClick={handleGenerateInsights}
+          >
+            Gerar Insights IA
+          </Button>
+        )}
 
+        {generateInsights && (
+          <div className="font-bold flex items-center gap-2 text-xl">
+            <p className="text-muted-foreground">Comfort:</p>
+            <p className="text-[#156e6a]">
+              {isInsightLoading ? '...' : comfortIndexText}
+            </p>
+          </div>
+        )}
         <div className="flex gap-2">
           <Button
             className="py-5 px-4 font-bold cursor-pointer text-[#156e6a]"
@@ -186,12 +204,14 @@ export const Dashboard = () => {
         />
       </div>
 
-      <WeatherSummary
-        summary={insight?.summary}
-        isLoading={isInsightLoading}
-        isError={isInsightError}
-        error={insightError instanceof Error ? insightError : undefined}
-      />
+      {generateInsights && (
+        <WeatherSummary
+          summary={insight?.summary}
+          isLoading={isInsightLoading}
+          isError={isInsightError}
+          error={insightError instanceof Error ? insightError : undefined}
+        />
+      )}
 
       <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
         <div className="min-h-60">
@@ -202,19 +222,23 @@ export const Dashboard = () => {
           <RainProbabilityHourlyChart hourly={weatherData.hourly} />
         </div>
 
-        <InsightsAccordion
-          insights={insight?.insights}
-          isLoading={isInsightLoading}
-          isError={isInsightError}
-          error={insightError instanceof Error ? insightError : undefined}
-        />
+        {generateInsights && (
+          <InsightsAccordion
+            insights={insight?.insights}
+            isLoading={isInsightLoading}
+            isError={isInsightError}
+            error={insightError instanceof Error ? insightError : undefined}
+          />
+        )}
 
-        <AlertsAccordion
-          alerts={insight?.alerts}
-          isLoading={isInsightLoading}
-          isError={isInsightError}
-          error={insightError instanceof Error ? insightError : undefined}
-        />
+        {generateInsights && (
+          <AlertsAccordion
+            alerts={insight?.alerts}
+            isLoading={isInsightLoading}
+            isError={isInsightError}
+            error={insightError instanceof Error ? insightError : undefined}
+          />
+        )}
       </div>
 
       <div className="mt-4 overflow-x-auto rounded-2xl bg-card">
