@@ -1,25 +1,15 @@
-import { useEffect, useRef } from 'react'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api'
-import type { WeatherSnapshot } from '@/@types/weather'
 import { SnapshotCard } from '@/components/snapshots/SnapshotCard'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { buildDateRange } from '@/utils/buildDateRange'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { filtersSchema, type FiltersForm } from '@/schemas/filtersSchema'
+import { useWeatherLogs } from '@/hooks/useWeatherLogs'
+import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 
 const PAGE_LIMIT = 10
 
-type WeatherLogsResponse = {
-  items: WeatherSnapshot[]
-  nextCursor?: string | null
-}
-
 export const Snapshots = () => {
-  const loadMoreRef = useRef<HTMLDivElement | null>(null)
-
   const {
     register,
     watch,
@@ -37,7 +27,7 @@ export const Snapshots = () => {
   const endDateInput = watch('endDate')
 
   const {
-    data,
+    snapshots,
     isLoading,
     isError,
     error,
@@ -45,61 +35,19 @@ export const Snapshots = () => {
     hasNextPage,
     isFetchingNextPage,
     isFetching,
-  } = useInfiniteQuery<WeatherLogsResponse, Error>({
-    queryKey: [
-      'weather-logs',
-      {
-        limit: PAGE_LIMIT,
-        startDate: startDateInput || null,
-        endDate: endDateInput || null,
-      },
-    ],
-    initialPageParam: null as string | null,
-    queryFn: async ({ pageParam }) => {
-      const { startDate, endDate } = buildDateRange(
-        startDateInput || null,
-        endDateInput || null,
-      )
-
-      const response = await api.get<WeatherLogsResponse>('/weather/logs', {
-        params: {
-          limit: PAGE_LIMIT,
-          cursor: pageParam ?? undefined,
-          startDate,
-          endDate,
-        },
-      })
-      return response.data
-    },
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? null,
+  } = useWeatherLogs({
+    startDate: startDateInput || null,
+    endDate: endDateInput || null,
+    limit: PAGE_LIMIT,
   })
 
-  const snapshots = data?.pages.flatMap((page) => page.items) ?? []
-
-  useEffect(() => {
-    const el = loadMoreRef.current
-    if (!el) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries
-        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      {
-        root: null,
-        rootMargin: '200px',
-        threshold: 0,
-      },
-    )
-
-    observer.observe(el)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+  const { loadMoreRef } = useInfiniteScroll({
+    hasNextPage,
+    isLoadingMore: isFetchingNextPage,
+    onLoadMore: () => {
+      fetchNextPage()
+    },
+  })
 
   return (
     <div>

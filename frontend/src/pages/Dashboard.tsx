@@ -1,9 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
-
 import { InfoCard } from '@/components/InfoCard'
-import { api } from '@/lib/api'
-import type { WeatherSnapshot } from '@/@types/weather'
 import { formatDate } from '@/utils/formatters/formatData'
 import DailyForecast from '@/components/DailyForecast'
 import { TemperatureHourlyChart } from '@/components/charts/TemperatureHourlyChart'
@@ -11,10 +7,11 @@ import { RainProbabilityHourlyChart } from '@/components/charts/RainProbabilityH
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
 import { handleDownload } from '@/hooks/downloadExport'
-import type { WeatherInsight } from '@/@types/weather-insights'
 import { WeatherSummary } from '@/components/insights/WeatherSummary'
 import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
 import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
+import { useWeatherSnapshotInfos } from '@/hooks/useWeatherSnapshotInfos'
+import { useWeatherSnapshotInsights } from '@/hooks/useWeatherSnapshotInsights'
 
 export const Dashboard = () => {
   const [searchParams] = useSearchParams()
@@ -25,42 +22,15 @@ export const Dashboard = () => {
     isLoading,
     isError,
     error,
-  } = useQuery<WeatherSnapshot, Error>({
-    queryKey: ['weather-snapshot', snapshotId ?? 'latest'],
-    queryFn: async () => {
-      if (snapshotId) {
-        const response = await api.get<WeatherSnapshot>(
-          `/weather/snapshot/${snapshotId}`,
-        )
-        return response.data
-      }
-
-      const response = await api.get<WeatherSnapshot>('/weather/latest')
-      return response.data
-    },
-  })
-
-  const effectiveSnapshotId = snapshotId ?? weatherData?.id
+    effectiveSnapshotId,
+  } = useWeatherSnapshotInfos({ snapshotId: snapshotId })
 
   const {
     data: insight,
     isLoading: isInsightLoading,
     isError: isInsightError,
     error: insightError,
-  } = useQuery<WeatherInsight, Error>({
-    queryKey: ['weather-insight', effectiveSnapshotId],
-    enabled: !!effectiveSnapshotId,
-    queryFn: async () => {
-      if (!effectiveSnapshotId) {
-        throw new Error('Snapshot ID não disponível para buscar insight.')
-      }
-
-      const response = await api.get<WeatherInsight>(
-        `/weather/snapshot/insight/${effectiveSnapshotId}`,
-      )
-      return response.data
-    },
-  })
+  } = useWeatherSnapshotInsights({ snapshotId: effectiveSnapshotId })
 
   if (isLoading) {
     return <p>Carregando snapshot de clima...</p>
