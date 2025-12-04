@@ -1,4 +1,9 @@
-import { IconDashboard, IconFolder, IconUsers } from '@tabler/icons-react'
+import {
+  IconDashboard,
+  IconFolder,
+  IconListDetails,
+  IconUsers,
+} from '@tabler/icons-react'
 
 export const sidebar = [
   {
@@ -15,6 +20,12 @@ export const sidebar = [
     title: 'Users',
     url: '/users',
     icon: IconUsers,
+    // icon: IconListDetails,
+  },
+  {
+    title: 'Pokemon',
+    url: '/pokemon',
+    icon: IconListDetails,
     // icon: IconListDetails,
   },
   //   {

@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { BootstrapModule } from './bootstrap/bootstrap.module';
 import { AuthModule } from './auth/auth.module';
 import { WeatherModule } from './weather/weather.module';
+import { PokemonModule } from './pokemon/pokemon.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { WeatherModule } from './weather/weather.module';
       isGlobal: true,
       envFilePath: ['.env', '../.env'],
     }),
+    PokemonModule,
     MongoModule,
     UsersModule,
     AuthModule,

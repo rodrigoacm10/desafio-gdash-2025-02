@@ -1,0 +1,222 @@
+import { Link, useParams } from 'react-router-dom'
+import { Card } from '@/components/ui/card'
+import { LoadingIcon } from '@/components/icons/LoadingIcon'
+import { BadgeType } from '@/components/pokemon/BadgeType'
+import { StateMessage } from '@/components/StateMessage'
+import { useGetPokemonDetails } from '@/hooks/pokemon/useGetPokemonDetails'
+import { InfoBlock } from '@/components/pokemon/InfoBlock'
+import { PokemonChainList } from '@/components/pokemon/PokemonChainList'
+import { SpriteHoverAnimated } from '@/components/pokemon/SpriteHoverAnimated'
+import { StatsChart } from '@/components/charts/StatsChart'
+import { Button } from '@/components/ui/button'
+import { IconArrowLeft, IconMicrophone } from '@tabler/icons-react'
+import { PokemonEffectivenessTable } from '@/components/pokemon/PokemonEffectivenessTable'
+import { PokemonMoviments } from '@/components/pokemon/PokemonMoviments'
+
+export function PokemonDetail() {
+  const { id } = useParams<{ id: string }>()
+  const { data, isLoading, isError } = useGetPokemonDetails(id)
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <LoadingIcon />
+      </div>
+    )
+  }
+
+  if (
+    isError ||
+    !data?.pokemon ||
+    !data?.species ||
+    !data?.abilities ||
+    !data.chain ||
+    !data.types
+  ) {
+    return (
+      <StateMessage
+        img="../../public/not-found-icon.png"
+        alt="Not Found Icon"
+        text="Pokémon not found"
+        color="text-[#6d6e71]"
+      />
+    )
+  }
+
+  const { pokemon, species, abilities, chain, types } = data
+
+  const handleRoar = () => {
+    const cryUrl = pokemon?.cries?.latest || pokemon?.cries?.legacy
+    if (!cryUrl) {
+      // message.warning('This Pokémon has no roar available!')
+      return
+    }
+
+    const audio = new Audio(cryUrl)
+    audio.play().catch(() => {
+      // message.error('Failed to play Pokémon cry')
+    })
+  }
+
+  return (
+    <div className="flex flex-col flex-1">
+      <Link to="/pokemon" className="mb-4">
+        <Button className="bg-[#156e6a] text-white hover:bg-[#115c58]">
+          <IconArrowLeft /> Go back
+        </Button>
+      </Link>
+
+      <div className="grid grid-cols-[400px_1fr] gap-2">
+        <div className="">
+          <Card className="p-6">
+            <div className="mb-2">
+              <h2 className="font-bold text-[#156e6a] text-2xl capitalize">
+                {pokemon.name.split('-').join(' ')}
+              </h2>
+              <p className="text-lg font-semibold opacity-50">
+                #{pokemon.id.toString().padStart(4, '0')}
+              </p>
+            </div>
+
+            <SpriteHoverAnimated
+              pokemon={pokemon}
+              className="!w-40 !h-40 mx-auto mb-4"
+            />
+
+            <div className="flex justify-center gap-2 mt-2">
+              {pokemon.types.map((t) => (
+                <BadgeType key={t.type.name} type={t.type.name} />
+              ))}
+            </div>
+
+            <div className="flex justify-center ">
+              <Button
+                className="bg-[#156e6a] text-white hover:bg-[#115c58]"
+                onClick={() => handleRoar()}
+              >
+                Roar <IconMicrophone />
+              </Button>
+            </div>
+
+            <p className="mt-4">
+              {
+                species?.flavor_text_entries.find(
+                  (f) => f.language.name === 'en',
+                )?.flavor_text
+              }
+            </p>
+
+            <div className="flex flex-wrap gap-2 mt-3">
+              <InfoBlock
+                minW={80}
+                upper={false}
+                label="Height"
+                value={`${pokemon.height / 10} m`}
+              />
+              <InfoBlock
+                minW={80}
+                upper={false}
+                label="Weight"
+                value={`${pokemon.weight / 10} kg`}
+              />
+              <InfoBlock
+                minW={80}
+                upper={false}
+                label="Baby"
+                value={species?.is_baby ? 'Yes' : 'No'}
+              />
+              <InfoBlock
+                minW={80}
+                upper={false}
+                label="Legendary"
+                value={species?.is_legendary ? 'Yes' : 'No'}
+              />
+              <InfoBlock
+                minW={80}
+                upper={false}
+                label="Mythical"
+                value={species?.is_mythical ? 'Yes' : 'No'}
+              />
+            </div>
+          </Card>
+
+          <div className="my-4 w-full">
+            <h3 className="font-bold text-[#156e6a] text-center text-lg mb-3">
+              Evolution chain
+            </h3>
+            {chain.length > 1 ? (
+              <PokemonChainList chain={chain} />
+            ) : (
+              <p className="font-bold text-[#156e6a] text-center opacity-60">
+                Unique Evolution
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1">
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold text-[#156e6a]">
+              Stats and Characteristics
+            </h2>
+
+            <div className="flex flex-wrap gap-2">
+              {pokemon.stats.map((stat) => (
+                <InfoBlock
+                  key={stat.stat.name}
+                  minW={120}
+                  label={stat.stat.name}
+                  value={stat.base_stat}
+                />
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-8 mt-4">
+              <div className="flex-1">
+                <div className="w-full h-44">
+                  <StatsChart stats={pokemon.stats} />
+                </div>
+              </div>
+
+              <div className="flex-2">
+                <h3 className="font-bold text-[#156e6a] text-lg">Abilities</h3>
+                <div className="flex flex-col gap-3 mt-2">
+                  {abilities.map((ability) => {
+                    const name =
+                      ability.names.find((n) => n.language.name === 'en')
+                        ?.name || ability.name
+                    const effect =
+                      ability.effect_entries.find(
+                        (e) => e.language.name === 'en',
+                      )?.short_effect || 'No description available'
+
+                    return (
+                      <div
+                        key={ability.id}
+                        className="p-2 rounded shadow bg-gray-50"
+                      >
+                        <p className="font-semibold capitalize">{name}</p>
+                        <p className="text-sm opacity-80">{effect}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className="">
+              <PokemonMoviments moves={pokemon.moves} />
+            </div>
+
+            <div>
+              <h3 className="font-bold text-[#156e6a] text-lg text-center mb-4">
+                Types Effectiveness
+              </h3>
+              <PokemonEffectivenessTable types={types} />
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}

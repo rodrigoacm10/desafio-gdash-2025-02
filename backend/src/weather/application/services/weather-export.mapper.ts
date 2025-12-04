@@ -69,9 +69,6 @@ export class WeatherExportMapper {
     };
   }
 
-  /**
-   * Converte linhas JSON em CSV (header + rows)
-   */
   toCsv<T extends Record<string, any>>(
     rows: T[],
     orderedColumns?: (keyof T)[],

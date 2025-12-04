@@ -8,6 +8,8 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { Users } from '@/pages/Users'
 import { Snapshots } from '@/pages/Snapshots'
 import { Register } from '@/pages/Register'
+import { PokemonList } from '@/pages/PokemonList'
+import { PokemonDetail } from '@/pages/PokemonDetail'
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,8 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <Dashboard /> },
           { path: 'users', element: <Users /> },
           { path: 'snapshots', element: <Snapshots /> },
+          { path: 'pokemon', element: <PokemonList /> },
+          { path: 'pokemon/:id', element: <PokemonDetail /> },
         ],
       },
 

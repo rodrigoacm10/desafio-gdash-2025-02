@@ -10,7 +10,7 @@ import { handleDownload } from '@/hooks/downloadExport'
 import { WeatherSummary } from '@/components/insights/WeatherSummary'
 import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
 import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
-import { useWeatherSnapshotInfos } from '@/hooks/useWeatherSnapshotInfos'
+import { useWeatherSnapshotInfos } from '@/hooks/weather/useWeatherSnapshotInfos'
 import { useWeatherSnapshotInsights } from '@/hooks/useWeatherSnapshotInsights'
 import { useState } from 'react'
 
