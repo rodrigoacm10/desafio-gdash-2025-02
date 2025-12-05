@@ -24,11 +24,14 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: 'dashboard', element: <Dashboard /> },
-          { path: 'users', element: <Users /> },
           { path: 'snapshots', element: <Snapshots /> },
           { path: 'pokemon', element: <PokemonList /> },
           { path: 'pokemon/:id', element: <PokemonDetail /> },
         ],
+      },
+      {
+        element: <ProtectedRoute roles={['admin']} />,
+        children: [{ path: 'users', element: <Users /> }],
       },
 
       {

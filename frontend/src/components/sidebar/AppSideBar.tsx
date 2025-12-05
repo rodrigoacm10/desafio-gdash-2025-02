@@ -14,8 +14,19 @@ import {
 import { NavMain } from './NavMain'
 import { NavUser } from './NavUser'
 import { sidebar } from '@/config/sidebar'
+import { useAuth } from '@/hooks/useAuth'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth()
+
+  const sidebarFiltred = sidebar.filter((route) => {
+    if (user?.role !== 'admin') {
+      return route.title !== 'Users'
+    }
+
+    return route
+  })
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader className="bg-[#f4f7fa]">
@@ -33,7 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="bg-[#f4f7fa]">
-        <NavMain items={sidebar} />
+        <NavMain items={sidebarFiltred} />
       </SidebarContent>
       <SidebarFooter className="bg-[#f4f7fa]">
         <NavUser />
