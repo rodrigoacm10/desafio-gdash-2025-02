@@ -1,17 +1,20 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiParam,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { GetPokemonDetailsUseCase } from '../../application/use-cases/get-pokemon-details.use-case';
 import { GetPokemonListUseCase } from '../../application/use-cases/get-pokemon-list.use-case';
 import { GetPokemonMoveDetailsUseCase } from '../../application/use-cases/get-pokemon-move-details.use-case';
-import { Pokemon } from '../../domain/pokemon.entity';
+import { JwtAuthGuard } from 'src/auth/infra/jwt-auth.guard';
 
 @ApiTags('Pokemon')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('pokemon')
 export class PokemonController {
   constructor(
@@ -29,7 +32,6 @@ export class PokemonController {
   })
   @ApiResponse({ status: 200, description: 'Detalhes do Pokémon' })
   @ApiResponse({ status: 404, description: 'Pokémon não encontrado' })
-  // : Promise<Pokemon>
   async getPokemonDetails(@Param('id') id: string) {
     return this.getPokemonDetailsUseCase.execute(id);
   }

@@ -13,6 +13,7 @@ import { JwtTokenService } from './infra/jwt-token.service';
 import { TOKEN_SERVICE } from './domain/token.service';
 import { AuthController } from './interfaces/http/auth.controller';
 import { CreateUserUseCase } from 'src/users/application/use-cases/create-user.use-case';
+import { AdminGuard } from './infra/admin.guard';
 
 @Module({
   imports: [
@@ -42,12 +43,13 @@ import { CreateUserUseCase } from 'src/users/application/use-cases/create-user.u
     LogoutUseCase,
     JwtStrategy,
     JwtAuthGuard,
+    AdminGuard,
     CreateUserUseCase,
     {
       provide: TOKEN_SERVICE,
       useClass: JwtTokenService,
     },
   ],
-  exports: [JwtAuthGuard],
+  exports: [JwtAuthGuard, AdminGuard],
 })
 export class AuthModule {}
