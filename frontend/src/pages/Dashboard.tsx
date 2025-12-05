@@ -11,7 +11,7 @@ import { WeatherSummary } from '@/components/insights/WeatherSummary'
 import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
 import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
 import { useWeatherSnapshotInfos } from '@/hooks/weather/useWeatherSnapshotInfos'
-import { useWeatherSnapshotInsights } from '@/hooks/useWeatherSnapshotInsights'
+import { useWeatherSnapshotInsights } from '@/hooks/weather/useWeatherSnapshotInsights'
 import { useState } from 'react'
 
 export const Dashboard = () => {

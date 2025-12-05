@@ -19,7 +19,7 @@ export function PokemonDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center h-full">
         <LoadingIcon />
       </div>
     )
@@ -48,26 +48,23 @@ export function PokemonDetail() {
   const handleRoar = () => {
     const cryUrl = pokemon?.cries?.latest || pokemon?.cries?.legacy
     if (!cryUrl) {
-      // message.warning('This Pokémon has no roar available!')
       return
     }
 
     const audio = new Audio(cryUrl)
-    audio.play().catch(() => {
-      // message.error('Failed to play Pokémon cry')
-    })
+    audio.play().catch(() => {})
   }
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 h-full">
       <Link to="/pokemon" className="mb-4">
         <Button className="bg-[#156e6a] text-white hover:bg-[#115c58]">
           <IconArrowLeft /> Go back
         </Button>
       </Link>
 
-      <div className="grid grid-cols-[400px_1fr] gap-2">
-        <div className="">
+      <div className="grid grid-cols-1 md:grid-cols-[35fr_65fr] gap-2">
+        <div className="flex-col h-full">
           <Card className="p-6">
             <div className="mb-2">
               <h2 className="font-bold text-[#156e6a] text-2xl capitalize">
@@ -155,7 +152,7 @@ export function PokemonDetail() {
         </div>
 
         <div className="flex-1">
-          <Card className="p-6">
+          <Card className="p-6 h-full">
             <h2 className="text-2xl font-bold text-[#156e6a]">
               Stats and Characteristics
             </h2>
@@ -171,7 +168,7 @@ export function PokemonDetail() {
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-8 mt-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
               <div className="flex-1">
                 <div className="w-full h-44">
                   <StatsChart stats={pokemon.stats} />
@@ -204,15 +201,15 @@ export function PokemonDetail() {
               </div>
             </div>
 
-            <div className="">
-              <PokemonMoviments moves={pokemon.moves} />
-            </div>
-
             <div>
               <h3 className="font-bold text-[#156e6a] text-lg text-center mb-4">
                 Types Effectiveness
               </h3>
               <PokemonEffectivenessTable types={types} />
+            </div>
+
+            <div className="">
+              <PokemonMoviments moves={pokemon.moves} />
             </div>
           </Card>
         </div>

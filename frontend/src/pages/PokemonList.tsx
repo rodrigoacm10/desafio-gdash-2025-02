@@ -1,12 +1,3 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from '@/components/ui/pagination'
 import type { PokemonResponse } from '@/@types/pokemon'
 import { LoadingIcon } from '@/components/icons/LoadingIcon'
 import { PokemonGrid } from '@/components/pokemon/PokemonGrid'
@@ -27,7 +18,7 @@ export function PokemonList() {
   } = usePokemonList()
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 h-full">
       <p className="text-3xl font-bold text-[#156e6a]">Pokémons</p>
       <p className="text-accent-foreground mb-6">List of registered Pokémons</p>
 

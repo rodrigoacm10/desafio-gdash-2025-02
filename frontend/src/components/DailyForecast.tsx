@@ -95,17 +95,17 @@ const DailyForecast = ({ daily }: { daily: WeatherDailyEntry[] }) => {
       </div>
 
       <div className="max-h-[400px] overflow-auto">
-        <table className="min-w-full text-left text-sm">
+        <table className="min-w-full text-left text-xs">
           <thead className="border-b border-sidebar-border/60 text-xs text-muted-foreground uppercase dark:border-sidebar-border">
             <tr>
-              <th className="py-2 pr-4">Date</th>
-              <th className="py-2 pr-4">Min / Max Temp</th>
-              <th className="py-2 pr-4">Day / Night</th>
-              <th className="py-2 pr-4">Rain</th>
-              <th className="py-2 pr-4">Humidity</th>
-              <th className="py-2 pr-4">Wind</th>
-              <th className="py-2 pr-4">UV</th>
-              <th className="py-2 pr-4">Condition</th>
+              <th className="py-3 pr-5">Date</th>
+              <th className="py-3 pr-5">Min / Max Temp</th>
+              <th className="py-3 pr-5">Day / Night</th>
+              <th className="py-3 pr-5">Rain</th>
+              <th className="py-3 pr-5">Humidity</th>
+              <th className="py-3 pr-5">Wind</th>
+              <th className="py-3 pr-5">UV</th>
+              <th className="py-3 pr-5">Condition</th>
             </tr>
           </thead>
           <tbody>
@@ -114,25 +114,25 @@ const DailyForecast = ({ daily }: { daily: WeatherDailyEntry[] }) => {
                 key={day.date}
                 className="border-b border-sidebar-border/40 last:border-b-0 dark:border-sidebar-border"
               >
-                <td className="py-2 pr-4">{formatDate(day.date)}</td>
-                <td className="py-2 pr-4">
+                <td className="py-3 pr-5">{formatDate(day.date)}</td>
+                <td className="py-3 pr-5">
                   {day.tempMin?.toFixed(1)}°C / {day.tempMax?.toFixed(1)}°C
                 </td>
-                <td className="py-2 pr-4">
+                <td className="py-3 pr-5">
                   {day.tempDay?.toFixed(1)}°C / {day.tempNight?.toFixed(1)}°C
                 </td>
-                <td className="py-2 pr-4">
+                <td className="py-3 pr-5">
                   {Math.round((day.rainProbability ?? 0) * 100)}%
                   {day.rainAmount != null && (
                     <span> ({day.rainAmount.toFixed(1)} mm)</span>
                   )}
                 </td>
-                <td className="py-2 pr-4">{day.humidity}%</td>
-                <td className="py-2 pr-4">
+                <td className="py-3 pr-5">{day.humidity}%</td>
+                <td className="py-3 pr-5">
                   {day.windSpeed?.toFixed(1)} m/s ({day.windDeg}°)
                 </td>
-                <td className="py-2 pr-4">{day.uvi?.toFixed(1)}</td>
-                <td className="py-2 pr-4">
+                <td className="py-3 pr-5">{day.uvi?.toFixed(1)}</td>
+                <td className="py-3 pr-5">
                   <span className="block text-xs font-medium">
                     {day.condition?.main}
                   </span>
