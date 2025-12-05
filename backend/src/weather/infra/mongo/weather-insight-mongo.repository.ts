@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { IWeatherInsightRepository } from '../../domain/weather-insight.repository';
 import {
   WeatherAlert,
+  WeatherAlertSeverity,
   WeatherInsight,
   WeatherInsightItem,
   WeatherInsightMetrics,
@@ -24,14 +25,20 @@ export class WeatherInsightMongoRepository
     const alerts: WeatherAlert[] = (doc.alerts ?? []).map((a) => ({
       type: a.type,
       description: a.description,
-      severity: a.severity as any,
+      severity: a.severity as WeatherAlertSeverity,
       icon: a.icon,
     }));
 
     const metrics: WeatherInsightMetrics = {
       comfortIndex: doc.metrics.comfortIndex,
-      trendTemperature: doc.metrics.trendTemperature as any,
-      trendRain: doc.metrics.trendRain as any,
+      trendTemperature: doc.metrics.trendTemperature as
+        | 'estável'
+        | 'subindo'
+        | 'caindo',
+      trendRain: doc.metrics.trendRain as
+        | 'estável'
+        | 'aumentando'
+        | 'diminuindo',
     };
 
     const insights: WeatherInsightItem[] = (doc.insights ?? []).map((i) => ({
@@ -51,7 +58,7 @@ export class WeatherInsightMongoRepository
   }
 
   async save(insight: WeatherInsight): Promise<WeatherInsight> {
-    const { id, ...data } = insight as any;
+    const { id, ...data } = insight;
     const created = await this.model.create(data);
     return this.mapToDomain(created);
   }

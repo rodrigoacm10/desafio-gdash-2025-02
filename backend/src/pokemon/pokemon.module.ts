@@ -10,8 +10,6 @@ import { POKEMON_REPOSITORY } from './domain/pokemon.repository';
   controllers: [PokemonController],
   providers: [
     { provide: POKEMON_REPOSITORY, useClass: PokemonRepository },
-    // PokemonRepository,
-
     GetPokemonDetailsUseCase,
     GetPokemonListUseCase,
     GetPokemonMoveDetailsUseCase,

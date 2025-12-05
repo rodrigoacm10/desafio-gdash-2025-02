@@ -16,7 +16,7 @@ export interface ExportCurrentXlsxInput {
 export interface ExportCurrentXlsxOutput {
   filename: string;
   mimeType: string;
-  buffer: ExcelJS.Buffer; // <-- changed here
+  buffer: ExcelJS.Buffer;
 }
 
 @Injectable()
@@ -44,13 +44,10 @@ export class ExportWeatherCurrentXlsxUseCase {
     const rowData: CurrentExportRow = this.mapper.toCurrentRow(snapshot);
     const columns = Object.keys(rowData);
 
-    // Header
     sheet.addRow(columns);
 
-    // Data row
-    sheet.addRow(columns.map((c) => (rowData as any)[c] ?? null));
+    sheet.addRow(columns.map((c) => rowData[c] ?? null));
 
-    // Ajuste de largura
     sheet.columns.forEach((column) => {
       let maxLength = 10;
 

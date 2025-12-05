@@ -30,7 +30,7 @@ class CurrentSchema {
   condition: ConditionSchema;
 
   @Prop({ type: Object })
-  metadata?: Record<string, any>;
+  metadata?: Record<string, number>;
 }
 const CurrentSchemaDef = SchemaFactory.createForClass(CurrentSchema);
 
@@ -59,7 +59,7 @@ class DailyEntrySchema {
   condition: ConditionSchema;
 
   @Prop({ type: Object })
-  metadata?: Record<string, any>;
+  metadata?: Record<string, number>;
 }
 const DailyEntrySchemaDef = SchemaFactory.createForClass(DailyEntrySchema);
 

@@ -12,8 +12,7 @@ export class JwtTokenService implements ITokenService {
   ) {}
 
   async signAccess(payload: TokenPayload): Promise<string> {
-    // Usa as opções padrão do JwtModule (JWT_ACCESS_SECRET / EXPIRES_IN)
-    const token = this.jwtService.sign(payload as any);
+    const token = this.jwtService.sign(payload);
     return token;
   }
 
@@ -22,7 +21,7 @@ export class JwtTokenService implements ITokenService {
       this.config.get<string>('JWT_REFRESH_SECRET') ?? 'changeme-refresh';
     const expiresIn = this.config.get('JWT_REFRESH_EXPIRES_IN') ?? '7d';
 
-    const token = this.jwtService.sign(payload as any, {
+    const token = this.jwtService.sign(payload, {
       secret,
       expiresIn,
     });

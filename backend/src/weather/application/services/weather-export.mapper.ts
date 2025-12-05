@@ -69,13 +69,11 @@ export class WeatherExportMapper {
     };
   }
 
-  toCsv<T extends Record<string, any>>(
+  toCsv<T extends CurrentExportRow>(
     rows: T[],
     orderedColumns?: (keyof T)[],
   ): string {
-    if (!rows.length) {
-      return '';
-    }
+    if (!rows.length) return '';
 
     const columns =
       orderedColumns && orderedColumns.length

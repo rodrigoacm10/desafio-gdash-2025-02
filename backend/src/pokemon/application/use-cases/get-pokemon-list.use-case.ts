@@ -17,6 +17,6 @@ export class GetPokemonListUseCase {
     limit: number,
     name?: string,
   ): Promise<PokemonPaginationResponse> {
-    return this.pokemonRepo.getPokemonList(offset, limit, name);
+    return await this.pokemonRepo.getPokemonList(offset, limit, name);
   }
 }

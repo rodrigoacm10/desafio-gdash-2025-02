@@ -80,7 +80,7 @@ class CurrentDto {
 
   @IsOptional()
   @IsObject()
-  metadata?: Record<string, any>;
+  metadata?: Record<string, number>;
 }
 
 class HourlyEntryDto extends CurrentDto {}
@@ -147,7 +147,7 @@ class DailyEntryDto {
 
   @IsOptional()
   @IsObject()
-  metadata?: Record<string, any>;
+  metadata?: Record<string, number>;
 }
 
 class LocationDto {

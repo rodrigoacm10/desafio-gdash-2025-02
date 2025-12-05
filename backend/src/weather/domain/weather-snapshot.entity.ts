@@ -20,7 +20,7 @@ export interface WeatherCurrent {
   rainLastHour?: number;
   rainProbability?: number;
   condition: WeatherCondition;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, number>;
 }
 
 export interface WeatherHourlyEntry extends WeatherCurrent {}
@@ -41,7 +41,7 @@ export interface WeatherDailyEntry {
   rainProbability?: number;
   rainAmount?: number;
   condition: WeatherCondition;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, number>;
 }
 
 export interface WeatherSnapshotLocation {

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 export const SnapshotCard = ({ snapshot }: { snapshot: WeatherSnapshot }) => {
   return (
-    // <Link to={`/dashboard?sanpshotId=${snapshot.id}`}>
     <Link to={`/dashboard?snapshotId=${snapshot.id}`}>
       <div className="cursor-pointer border px-5 py-4 rounded-2xl flex justify-between">
         <div>

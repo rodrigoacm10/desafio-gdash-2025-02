@@ -107,7 +107,7 @@ export class WeatherSnapshotMongoRepository
   }
 
   async save(snapshot: WeatherSnapshot): Promise<WeatherSnapshot> {
-    const { id, ...data } = snapshot as any;
+    const { id, ...data } = snapshot;
     const created = await this.model.create(data);
     return this.mapToDomain(created);
   }
@@ -122,7 +122,8 @@ export class WeatherSnapshotMongoRepository
   ): Promise<ListWeatherLogsResult> {
     const limit = params.limit ?? 50;
 
-    const query: any = {};
+    const query: Partial<{ createdAt: { $gte?: Date; $lte?: Date }; _id: {} }> =
+      {};
 
     if (params.startDate || params.endDate) {
       query.createdAt = {};

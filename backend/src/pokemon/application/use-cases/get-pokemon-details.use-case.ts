@@ -3,7 +3,6 @@ import {
   POKEMON_REPOSITORY,
   type IPokemonRepository,
 } from '../../domain/pokemon.repository';
-import { Pokemon } from '../../domain/pokemon.entity';
 
 @Injectable()
 export class GetPokemonDetailsUseCase {
@@ -12,7 +11,6 @@ export class GetPokemonDetailsUseCase {
     private readonly pokemonRepo: IPokemonRepository,
   ) {}
 
-  // : Promise<Pokemon>
   async execute(id: string) {
     const pokemon = await this.pokemonRepo.getPokemonById(id);
     if (!pokemon) {

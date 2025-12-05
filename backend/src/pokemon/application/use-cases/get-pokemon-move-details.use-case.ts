@@ -3,6 +3,7 @@ import {
   POKEMON_REPOSITORY,
   type IPokemonRepository,
 } from '../../domain/pokemon.repository';
+import { MoveDetail } from 'src/pokemon/domain/pokemon.entity';
 
 @Injectable()
 export class GetPokemonMoveDetailsUseCase {
@@ -11,7 +12,7 @@ export class GetPokemonMoveDetailsUseCase {
     private readonly pokemonRepo: IPokemonRepository,
   ) {}
 
-  async execute(url: string): Promise<any> {
-    return this.pokemonRepo.getPokemonMove(url);
+  async execute(url: string): Promise<MoveDetail> {
+    return await this.pokemonRepo.getPokemonMove(url);
   }
 }

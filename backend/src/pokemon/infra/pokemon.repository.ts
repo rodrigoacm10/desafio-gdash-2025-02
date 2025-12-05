@@ -1,6 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { IPokemonRepository } from '../domain/pokemon.repository';
-import { Pokemon, PokemonPaginationResponse } from '../domain/pokemon.entity';
+import {
+  AbilityDetail,
+  MoveDetail,
+  Pokemon,
+  PokemonAbility,
+  PokemonPaginationResponse,
+  PokemonSpecies,
+  PokemonType,
+  TypeDetail,
+} from '../domain/pokemon.entity';
 import {
   getPokemonDetails,
   getPokemonList,
@@ -29,20 +38,24 @@ export class PokemonRepository implements IPokemonRepository {
     return getPokemonList(offset, limit, name);
   }
 
-  async getPokemonMove(url: string): Promise<any> {
+  async getPokemonMove(url: string): Promise<MoveDetail> {
     return getPokemonMove(url);
   }
 
-  async getPokemonAbilities(abilities: any[]): Promise<any> {
+  async getPokemonAbilities(
+    abilities: PokemonAbility[],
+  ): Promise<AbilityDetail[]> {
     return getPokemonAbilities(abilities);
   }
-  async getPokemonSpecies(url: any): Promise<any> {
+  async getPokemonSpecies(url: string): Promise<PokemonSpecies> {
     return getPokemonSpecies(url);
   }
-  async getPokemonSpeciesEvolution(species: any): Promise<any> {
+  async getPokemonSpeciesEvolution(
+    species: PokemonSpecies,
+  ): Promise<Pokemon[]> {
     return getPokemonSpeciesEvolution(species);
   }
-  async getPokemonTypes(types: any[]): Promise<any> {
+  async getPokemonTypes(types: PokemonType[]): Promise<TypeDetail[]> {
     return getPokemonTypes(types);
   }
 }

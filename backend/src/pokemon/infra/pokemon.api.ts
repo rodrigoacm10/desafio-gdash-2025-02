@@ -1,17 +1,26 @@
-import axios from 'axios'; // Usando Axios para fazer as requisições HTTP
-import { Pokemon, PokemonPaginationResponse } from '../domain/pokemon.entity';
+import axios from 'axios';
+import {
+  AbilityDetail,
+  EvolutionChain,
+  EvolutionNode,
+  MoveDetail,
+  Pokemon,
+  PokemonAbility,
+  PokemonPaginationResponse,
+  PokemonSpecies,
+  PokemonType,
+  TypeDetail,
+} from '../domain/pokemon.entity';
 
 export const apiPokemon = axios.create({
   baseURL: 'https://pokeapi.co/api/v2/',
 });
 
-// Função para obter os detalhes de um Pokémon
 export const getPokemonDetails = async (id: string): Promise<Pokemon> => {
   const { data } = await apiPokemon.get<Pokemon>(`pokemon/${id}`);
   return data;
 };
 
-// Função para obter a lista de Pokémons com paginação
 export const getPokemonList = async (
   offset: number,
   limit: number,
@@ -34,41 +43,45 @@ export const getPokemonList = async (
   return { pokemons, totalCount: data.count };
 };
 
-// Função para obter os detalhes de um movimento específico
-export const getPokemonMove = async (url: string): Promise<any> => {
+export const getPokemonMove = async (url: string): Promise<MoveDetail> => {
   const { data } = await apiPokemon.get(url);
   return data;
 };
 
-// Função para obter os detalhes das habilidades de um Pokémon
-export const getPokemonAbilities = async (abilities: any[]) => {
+export const getPokemonAbilities = async (
+  abilities: PokemonAbility[],
+): Promise<AbilityDetail[]> => {
   const abilitiesFull = await Promise.all(
     abilities.map(async (ability) => {
-      const { data } = await apiPokemon.get(ability.ability.url);
+      const { data } = await apiPokemon.get<AbilityDetail>(ability.ability.url);
       return data;
     }),
   );
   return abilitiesFull;
 };
 
-// Função para obter os detalhes das espécies de um Pokémon
-export const getPokemonSpecies = async (url: string) => {
+export const getPokemonSpecies = async (
+  url: string,
+): Promise<PokemonSpecies> => {
   const { data } = await apiPokemon.get(url);
   return data;
 };
 
-// Função para obter a evolução de uma espécie de Pokémon
-export const getPokemonSpeciesEvolution = async (species: any) => {
+export const getPokemonSpeciesEvolution = async (
+  species: PokemonSpecies,
+): Promise<Pokemon[]> => {
   if (!species.evolution_chain?.url) return [];
 
-  const { data } = await apiPokemon.get(species.evolution_chain.url);
+  const { data } = await apiPokemon.get<EvolutionChain>(
+    species.evolution_chain.url,
+  );
 
   const evolutions: string[] = [];
-  const traverse = (node: any) => {
+  const traverse = (node: EvolutionNode) => {
     evolutions.push(node.species.name);
 
     if (node.evolves_to.length > 0) {
-      node.evolves_to.forEach((child: any) => traverse(child));
+      node.evolves_to.forEach((child) => traverse(child));
     }
   };
 
@@ -84,8 +97,9 @@ export const getPokemonSpeciesEvolution = async (species: any) => {
   return pokemons;
 };
 
-// Função para obter os tipos de um Pokémon
-export const getPokemonTypes = async (types: any[]) => {
+export const getPokemonTypes = async (
+  types: PokemonType[],
+): Promise<TypeDetail[]> => {
   const typeDetailsPromises = types.map((t) =>
     apiPokemon.get(t.type.url).then((res) => res.data),
   );
