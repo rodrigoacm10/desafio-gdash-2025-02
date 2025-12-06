@@ -20,22 +20,10 @@ export const sidebar = [
     title: 'Users',
     url: '/users',
     icon: IconUsers,
-    // icon: IconListDetails,
   },
   {
     title: 'Pokemon',
     url: '/pokemon',
     icon: IconListDetails,
-    // icon: IconListDetails,
   },
-  //   {
-  //     title: 'Analytics',
-  //     url: '#',
-  //     icon: IconChartBar,
-  //   },
-  //   {
-  //     title: 'Team',
-  //     url: '#',
-  //     icon: IconUsers,
-  //   },
 ]

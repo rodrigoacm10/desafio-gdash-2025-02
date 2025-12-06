@@ -1,20 +1,19 @@
 import type { User } from '@/@types/user'
 import { useState } from 'react'
 import { AlertDelete } from './AlertDelete'
+import { AlertEdit } from './AlertEdit'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { IconDotsVertical, IconTrash } from '@tabler/icons-react'
+import { IconDotsVertical, IconTrash, IconPencil } from '@tabler/icons-react'
 import { Button } from '../ui/button'
-import { AlertDialogTrigger } from '../ui/alert-dialog'
 
 export const CardUser = ({ user }: { user: User }) => {
-  const [userBeingDeletedId, setUserBeingDeletedId] = useState<string | null>(
-    null,
-  )
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
 
   return (
     <div
@@ -27,11 +26,7 @@ export const CardUser = ({ user }: { user: User }) => {
         <p className="text-xs text-muted-foreground">Role: {user.role}</p>
       </div>
 
-      <AlertDelete
-        user={user}
-        userSelectedId={userBeingDeletedId}
-        changeUserSelectedId={setUserBeingDeletedId}
-      >
+      <div className="flex items-start">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost">
@@ -39,16 +34,36 @@ export const CardUser = ({ user }: { user: User }) => {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent side="bottom" className="w-24" align="end">
-            <AlertDialogTrigger asChild>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <IconTrash className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </AlertDialogTrigger>
+          <DropdownMenuContent side="bottom" className="w-28" align="end">
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+                setIsEditOpen(true)
+              }}
+            >
+              <IconPencil className="h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+                setIsDeleteOpen(true)
+              }}
+            >
+              <IconTrash className="h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </AlertDelete>
+
+        <AlertEdit user={user} open={isEditOpen} onOpenChange={setIsEditOpen} />
+        <AlertDelete
+          user={user}
+          open={isDeleteOpen}
+          onOpenChange={setIsDeleteOpen}
+        />
+      </div>
     </div>
   )
 }

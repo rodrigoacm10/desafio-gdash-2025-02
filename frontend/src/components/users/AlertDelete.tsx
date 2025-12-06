@@ -12,50 +12,37 @@ import {
 
 import { api } from '@/lib/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import React from 'react'
 
 const USERS_QUERY_KEY = ['users']
 
 export const AlertDelete = ({
   user,
-  userSelectedId,
-  changeUserSelectedId,
-  children,
+  open,
+  onOpenChange,
 }: {
   user: Partial<User>
-  userSelectedId?: string | null
-  changeUserSelectedId?: (value: string | null) => void
-} & React.ComponentProps<'div'>) => {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) => {
   const queryClient = useQueryClient()
 
   const deleteMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      await api.delete(`/users/${userId}`)
+    mutationFn: async () => {
+      await api.delete(`/users/${user.id}`)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY })
-      changeUserSelectedId && changeUserSelectedId(null)
+      onOpenChange(false)
     },
   })
 
   const handleConfirmDelete = () => {
-    if (!userSelectedId) return
-    deleteMutation.mutate(userSelectedId)
+    if (!user.id) return
+    deleteMutation.mutate()
   }
 
   return (
-    <AlertDialog
-      open={userSelectedId === user.id}
-      onOpenChange={(open) => {
-        if (open) {
-          changeUserSelectedId && changeUserSelectedId(user.id as string)
-        } else {
-          changeUserSelectedId && changeUserSelectedId(null)
-        }
-      }}
-    >
-      {children}
-
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
