@@ -12,10 +12,9 @@ import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
 import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
 import { useWeatherSnapshotInfos } from '@/hooks/weather/useWeatherSnapshotInfos'
 import { useWeatherSnapshotInsights } from '@/hooks/weather/useWeatherSnapshotInsights'
-import { useState } from 'react'
+import { useCreateWeatherSnapshotInsight } from '@/hooks/weather/useCreateWeatherSnapshotInsight'
 
 export const Dashboard = () => {
-  const [generateInsights, setGenerateInsights] = useState(false)
   const [searchParams] = useSearchParams()
   const snapshotId = searchParams.get('snapshotId')
 
@@ -25,16 +24,20 @@ export const Dashboard = () => {
     isError,
     error,
     effectiveSnapshotId,
-  } = useWeatherSnapshotInfos({ snapshotId: snapshotId })
+  } = useWeatherSnapshotInfos({ snapshotId })
 
   const {
     data: insight,
     isLoading: isInsightLoading,
     isError: isInsightError,
     error: insightError,
+    isNotFound: isInsightNotFound,
   } = useWeatherSnapshotInsights({
-    snapshotId: generateInsights ? effectiveSnapshotId : undefined,
+    snapshotId: effectiveSnapshotId,
   })
+
+  const { mutate: createInsight, isPending: isCreatingInsight } =
+    useCreateWeatherSnapshotInsight()
 
   if (isLoading) {
     return <p>Carregando snapshot de clima...</p>
@@ -80,30 +83,42 @@ export const Dashboard = () => {
   const comfortIndexText =
     insight?.metrics?.comfortIndex != null ? insight.metrics.comfortIndex : '--'
 
-  const handleGenerateInsights = () => {
-    setGenerateInsights(true)
+  const handleCreateInsights = () => {
+    if (!effectiveSnapshotId) return
+
+    createInsight({ snapshotId: effectiveSnapshotId })
   }
+
+  const hasInsight = !!insight
+  const showInsightSections =
+    hasInsight || isInsightLoading || (isInsightError && !isInsightNotFound)
 
   return (
     <div className="h-full">
       <div className="flex justify-between gap-4 mb-2">
-        {!generateInsights && (
-          <Button
-            className="bg-[#156e6a] hover:bg-[#115c58] py-5 px-4 font-bold cursor-pointer"
-            onClick={handleGenerateInsights}
-          >
-            Gerar Insights IA
-          </Button>
-        )}
+        <div className="flex items-center gap-4">
+          {isInsightNotFound && (
+            <Button
+              className="bg-[#156e6a] hover:bg-[#115c58] py-5 px-4 font-bold cursor-pointer"
+              onClick={handleCreateInsights}
+              disabled={isCreatingInsight || !effectiveSnapshotId}
+            >
+              {isCreatingInsight
+                ? 'Gerando Insights IA...'
+                : 'Gerar Insights IA'}
+            </Button>
+          )}
 
-        {generateInsights && (
-          <div className="font-bold flex items-center gap-2 text-xl">
-            <p className="text-muted-foreground">Comfort:</p>
-            <p className="text-[#156e6a]">
-              {isInsightLoading ? '...' : comfortIndexText}
-            </p>
-          </div>
-        )}
+          {showInsightSections && (
+            <div className="font-bold flex items-center gap-2 text-xl">
+              <p className="text-muted-foreground">Comfort:</p>
+              <p className="text-[#156e6a]">
+                {isInsightLoading ? '...' : comfortIndexText}
+              </p>
+            </div>
+          )}
+        </div>
+
         <div className="flex gap-2">
           <Button
             className="py-5 px-4 font-bold cursor-pointer text-[#156e6a]"
@@ -204,11 +219,11 @@ export const Dashboard = () => {
         />
       </div>
 
-      {generateInsights && (
+      {showInsightSections && (
         <WeatherSummary
           summary={insight?.summary}
           isLoading={isInsightLoading}
-          isError={isInsightError}
+          isError={isInsightError && !isInsightNotFound}
           error={insightError instanceof Error ? insightError : undefined}
         />
       )}
@@ -222,20 +237,20 @@ export const Dashboard = () => {
           <RainProbabilityHourlyChart hourly={weatherData.hourly} />
         </div>
 
-        {generateInsights && (
+        {showInsightSections && (
           <InsightsAccordion
             insights={insight?.insights}
             isLoading={isInsightLoading}
-            isError={isInsightError}
+            isError={isInsightError && !isInsightNotFound}
             error={insightError instanceof Error ? insightError : undefined}
           />
         )}
 
-        {generateInsights && (
+        {showInsightSections && (
           <AlertsAccordion
             alerts={insight?.alerts}
             isLoading={isInsightLoading}
-            isError={isInsightError}
+            isError={isInsightError && !isInsightNotFound}
             error={insightError instanceof Error ? insightError : undefined}
           />
         )}

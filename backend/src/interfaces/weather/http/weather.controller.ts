@@ -24,6 +24,8 @@ import { WeatherInsight } from 'src/domain/weather/weather-insight.entity';
 import { SaveWeatherSnapshotUseCase } from 'src/application/weather/use-cases/save-weather-snapshot.use-case';
 import { GetLatestSnapshotUseCase } from 'src/application/weather/use-cases/get-latest-weather-snapshot.use-case';
 import { GetOrCreateWeatherInsightUseCase } from 'src/application/weather/use-cases/get-or-create-weather-insight.use-case';
+import { GetWeatherInsightUseCase } from 'src/application/weather/use-cases/get-weather-insight.use-case';
+import { CreateWeatherInsightUseCase } from 'src/application/weather/use-cases/create-weather-insight.use-case';
 
 @ApiTags('weather')
 @ApiBearerAuth()
@@ -38,6 +40,8 @@ export class WeatherController {
     private readonly exportCurrentCsv: ExportWeatherCurrentCsvUseCase,
     private readonly exportCurrentXlsx: ExportWeatherCurrentXlsxUseCase,
     private readonly getOrCreateInsight: GetOrCreateWeatherInsightUseCase,
+    private readonly getInsight: GetWeatherInsightUseCase,
+    private readonly createInsight: CreateWeatherInsightUseCase,
   ) {}
 
   @Post('snapshot')
@@ -135,17 +139,30 @@ export class WeatherController {
     res.send(result.buffer);
   }
 
+  // @Get('snapshot/insight/:id')
+  // @ApiOperation({
+  //   summary:
+  //     'Retorna o insight relacionado ao snapshot. Se não existir, gera via ChatGPT, salva e retorna.',
+  // })
+  // async getOrCreateInsightRoute(
+  //   @Param('id') id: string,
+  // ): Promise<WeatherInsight> {
+  //   return this.getOrCreateInsight.execute(id);
+  // }
+
+  @Post('snapshot/insight/:id')
+  @ApiOperation({
+    summary: 'Retorna o insight gerado via ChatGPT, salva e retorna.',
+  })
+  async CreateInsightRoute(@Param('id') id: string): Promise<WeatherInsight> {
+    return this.createInsight.execute(id);
+  }
+
   @Get('snapshot/insight/:id')
   @ApiOperation({
-    summary:
-      'Retorna o insight relacionado ao snapshot. Se não existir, gera via ChatGPT, salva e retorna.',
+    summary: 'Retorna o insight relacionado ao snapshot.',
   })
-  async getOrCreateInsightRoute(
-    @Param('id') id: string,
-  ): Promise<WeatherInsight> {
-    return this.getOrCreateInsight.execute(id);
+  async getInsightRoute(@Param('id') id: string): Promise<WeatherInsight> {
+    return this.getInsight.execute(id);
   }
-  // vou utilizar a api do chatgpt
-
-  // via fazer um post/get que passe o ID do snapshot (snapshot/insight/:id), isso vai fazer um find para ver se tem algum insight relacionado ao snapshot, caso não tenha vai criar um insight baseado nos dados do snapshot, depois disso vai relacionar o insight com o snapshot, e vai retornar os dados do insight relacionado desse id de snapshot.
 }

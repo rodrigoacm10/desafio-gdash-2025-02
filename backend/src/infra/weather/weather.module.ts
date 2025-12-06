@@ -20,6 +20,8 @@ import { WeatherInsightMongoRepository } from './mongo/weather-insight-mongo.rep
 import { WEATHER_INSIGHTS_LLM } from '../../application/weather/ports/weather-insights-llm.port';
 import { OpenAIWeatherInsightsProvider } from './openai/openai-weather-insights.provider';
 import { GetOrCreateWeatherInsightUseCase } from '../../application/weather/use-cases/get-or-create-weather-insight.use-case';
+import { CreateWeatherInsightUseCase } from '../../application/weather/use-cases/create-weather-insight.use-case';
+import { GetWeatherInsightUseCase } from '../../application/weather/use-cases/get-weather-insight.use-case';
 import {
   WeatherInsightDocument,
   WeatherInsightSchema,
@@ -59,6 +61,8 @@ import {
     ExportWeatherCurrentXlsxUseCase,
 
     GetOrCreateWeatherInsightUseCase,
+    CreateWeatherInsightUseCase,
+    GetWeatherInsightUseCase,
   ],
   exports: [WEATHER_SNAPSHOT_REPOSITORY],
 })
