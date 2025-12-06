@@ -20,6 +20,11 @@ export const useWeatherSnapshotInfos = ({
       const response = await api.get<WeatherSnapshot>('/weather/latest')
       return response.data
     },
+
+    refetchInterval: snapshotId ? false : 10 * 60 * 1000,
+    // refetchInterval: snapshotId ? false : 1 * 60 * 1000,
+
+    refetchOnWindowFocus: false,
   })
 
   const snapshot = query.data
