@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongoModule } from './config/mongo.module';
-import { UsersModule } from './users/users.module';
-import { BootstrapModule } from './bootstrap/bootstrap.module';
-import { AuthModule } from './auth/auth.module';
-import { WeatherModule } from './weather/weather.module';
-import { PokemonModule } from './pokemon/pokemon.module';
+import { WeatherModule } from './infra/weather/weather.module';
+import { PokemonModule } from './infra/pokemon/pokemon.module';
+import { UsersModule } from './infra/users/users.module';
+import { AuthModule } from './infra/auth/auth.module';
+import { MongoModule } from './infra/config/mongo.module';
+import { BootstrapModule } from './infra/bootstrap/bootstrap.module';
 
 @Module({
   imports: [
