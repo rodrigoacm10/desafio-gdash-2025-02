@@ -6,6 +6,7 @@ load_dotenv()
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 OW_LAT = os.getenv("WEATHER_LAT")
 OW_LON = os.getenv("WEATHER_LON")
+
 RABBITMQ_URL = os.getenv("RABBITMQ_URL")
 RABBITMQ_QUEUE = os.getenv("RABBITMQ_QUEUE", "weather_snapshots")
 
@@ -16,3 +17,5 @@ LOCATION_TIMEZONE = os.getenv("LOCATION_TIMEZONE", "America/Recife")
 LOCATION_TZ_OFFSET = int(os.getenv("LOCATION_TZ_OFFSET", "-10800"))
 
 WEATHER_API_BASE_URL = os.getenv("WEATHER_API_BASE_URL")
+
+WEATHER_POLL_INTERVAL_SECONDS = int(os.getenv("WEATHER_POLL_INTERVAL_SECONDS", "3600"))

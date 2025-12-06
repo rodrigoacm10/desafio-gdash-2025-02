@@ -5,6 +5,9 @@ from config import LOCATION_CITY, LOCATION_STATE, LOCATION_COUNTRY, LOCATION_TIM
  
 
 def build_current(raw: dict) -> dict:
+    print("[PYTHON] envs", LOCATION_CITY, LOCATION_STATE, LOCATION_COUNTRY, LOCATION_TIMEZONE, LOCATION_TZ_OFFSET
+    )
+
     current = raw["current"]
     weather = current.get("weather", [{}])[0] or {}
 
@@ -112,6 +115,7 @@ def build_daily(raw: dict, limit: int = 7) -> list:
     return result
 
 def build_snapshot(raw: dict) -> dict:
+    print('[PYTHON] RODOU o build')
     fetched_at = datetime.now(timezone.utc).isoformat()
 
     snapshot = {
@@ -132,4 +136,5 @@ def build_snapshot(raw: dict) -> dict:
         "daily": build_daily(raw),  
     }
 
+    print('[PYTHON] retornou snapshot')
     return snapshot
