@@ -38,7 +38,7 @@ A aplicação implementa o fluxo completo proposto no desafio:
 
 Link do vídeo (YouTube – não listado):
 
-[INSERIR LINK AQUI]
+[\[Vídeo de apresentação do desafio\]](https://youtu.be/R_kVIPhWjpA)
 
 No vídeo foram abordados:
 

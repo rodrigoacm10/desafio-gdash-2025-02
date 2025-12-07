@@ -41,7 +41,7 @@ export const Home = () => {
             <span className="bg-white rounded-2xl px-4 py-2 bg-gradient-to-b from-white/10  to-black/30">
               Weather
             </span>{' '}
-            <span className="text-white">Manegement</span>
+            <span className="text-white">Management</span>
           </p>
         </div>
       </div>
