@@ -34,11 +34,11 @@ export const RainProbabilityHourlyChart: React.FC<
 
   return (
     <BarChart
-      title="Rain probability per hour (next 12h)"
+      title="Probabilidade de chuva por hora (next 12h)"
       data={chartData}
       xKey="time"
       valueKey="rainProbabilityPercent"
-      valueLabel="Rain probability (%)"
+      valueLabel="Probabilidade de chuva (%)"
       fill={PRIMARY}
     />
   )

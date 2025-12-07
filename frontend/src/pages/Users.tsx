@@ -23,27 +23,31 @@ export const Users = () => {
 
   return (
     <div>
-      <p className="text-3xl font-bold text-[#156e6a]">Users</p>
-      <p className="text-accent-foreground mb-6">users registred on system</p>
+      <p className="text-3xl font-bold text-[#156e6a]">Usuários</p>
+      <p className="text-accent-foreground mb-6">
+        usuários registrados no sistema
+      </p>
 
-      {isLoading && <p>Loading users...</p>}
+      {isLoading && <p>Carregando usuários...</p>}
 
       {isError && (
         <p className="text-red-500">
-          Error loading users:
-          {error instanceof Error ? error.message : 'Unknown error'}
+          Erro ao carregar usuários:{' '}
+          {error instanceof Error ? error.message : 'Erro desconhecido'}
         </p>
       )}
 
       {!isLoading && !isError && (
         <>
           {users && users.length === 0 && (
-            <p className="text-sm text-muted-foreground">No users found.</p>
+            <p className="text-sm text-muted-foreground">
+              Nenhum usuário encontrado.
+            </p>
           )}
 
           <div className="flex flex-col gap-2">
             {users?.map((user) => (
-              <CardUser user={user} />
+              <CardUser key={user.id} user={user} />
             ))}
           </div>
         </>

@@ -3,7 +3,7 @@ import React from 'react'
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''
-  return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-US', {
+  return new Date(`${dateStr}T00:00:00`).toLocaleDateString('pt-BR', {
     weekday: 'short',
     day: '2-digit',
     month: '2-digit',
@@ -21,19 +21,19 @@ const DailyForecast = ({ daily }: { daily: WeatherDailyEntry[] }) => {
     const days = (daily || []).slice(0, 7)
 
     const header = [
-      'Date',
-      'Minimum temp (°C)',
-      'Maximum temp (°C)',
-      'Day temp (°C)',
-      'Night temp (°C)',
-      'Rain probability (%)',
-      'Rain (mm)',
-      'Humidity (%)',
-      'Wind (m/s)',
-      'Wind direction (°)',
+      'Data',
+      'Temperatura mínima (°C)',
+      'Temperatura máxima (°C)',
+      'Temperatura de dia (°C)',
+      'Temperatura de noite (°C)',
+      'Probabilidade de chuva (%)',
+      'Chuva (mm)',
+      'Umidade (%)',
+      'Vento (m/s)',
+      'Direção do vento (°)',
       'UVI',
-      'Condition',
-      'Description',
+      'Condição',
+      'Descrição',
     ]
 
     const rows = days.map((day) => {
@@ -70,7 +70,7 @@ const DailyForecast = ({ daily }: { daily: WeatherDailyEntry[] }) => {
     const today = new Date().toISOString().slice(0, 10)
 
     link.href = url
-    link.setAttribute('download', `daily-forecast-${today}.csv`)
+    link.setAttribute('download', `previsao-diaria-${today}.csv`)
     document.body.appendChild(link)
     link.click()
 
@@ -83,14 +83,14 @@ const DailyForecast = ({ daily }: { daily: WeatherDailyEntry[] }) => {
   return (
     <div className="relative flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 bg-background p-4 dark:border-sidebar-border">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <p className="text-sm font-medium">Daily Forecast</p>
+        <p className="text-sm font-medium">Previsão Diária</p>
 
         <button
           type="button"
           className="inline-flex items-center rounded-md border border-sidebar-border/60 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm transition hover:bg-muted dark:border-sidebar-border"
           onClick={handleDownloadCsv}
         >
-          Download CSV
+          Baixar CSV
         </button>
       </div>
 
@@ -98,14 +98,14 @@ const DailyForecast = ({ daily }: { daily: WeatherDailyEntry[] }) => {
         <table className="min-w-full text-left text-xs">
           <thead className="border-b border-sidebar-border/60 text-xs text-muted-foreground uppercase dark:border-sidebar-border">
             <tr>
-              <th className="py-3 pr-5">Date</th>
-              <th className="py-3 pr-5">Min / Max Temp</th>
-              <th className="py-3 pr-5">Day / Night</th>
-              <th className="py-3 pr-5">Rain</th>
-              <th className="py-3 pr-5">Humidity</th>
-              <th className="py-3 pr-5">Wind</th>
+              <th className="py-3 pr-5">Data</th>
+              <th className="py-3 pr-5">Temp. Min / Max</th>
+              <th className="py-3 pr-5">Dia / Noite</th>
+              <th className="py-3 pr-5">Chuva</th>
+              <th className="py-3 pr-5">Umidade</th>
+              <th className="py-3 pr-5">Vento</th>
               <th className="py-3 pr-5">UV</th>
-              <th className="py-3 pr-5">Condition</th>
+              <th className="py-3 pr-5">Condição</th>
             </tr>
           </thead>
           <tbody>

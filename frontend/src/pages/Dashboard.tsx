@@ -9,10 +9,10 @@ import { Download } from 'lucide-react'
 import { handleDownload } from '@/hooks/downloadExport'
 import { WeatherSummary } from '@/components/insights/WeatherSummary'
 import { InsightsAccordion } from '@/components/insights/InsightsAccordion'
-import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
 import { useWeatherSnapshotInfos } from '@/hooks/weather/useWeatherSnapshotInfos'
 import { useWeatherSnapshotInsights } from '@/hooks/weather/useWeatherSnapshotInsights'
 import { useCreateWeatherSnapshotInsight } from '@/hooks/weather/useCreateWeatherSnapshotInsight'
+import { AlertsAccordion } from '@/components/insights/AlertsAccordion'
 
 export const Dashboard = () => {
   const [searchParams] = useSearchParams()
@@ -111,7 +111,7 @@ export const Dashboard = () => {
 
           {showInsightSections && (
             <div className="font-bold flex items-center gap-2 text-xl">
-              <p className="text-muted-foreground">Comfort:</p>
+              <p className="text-muted-foreground">Conforto:</p>
               <p className="text-[#156e6a]">
                 {isInsightLoading ? '...' : comfortIndexText}
               </p>
@@ -168,7 +168,7 @@ export const Dashboard = () => {
 
           {(snapshotId || currentSnapshotId) && (
             <p className="text-xs text-muted-foreground">
-              Snapshot ID:{' '}
+              ID do Snapshot:{' '}
               <span className="font-mono">
                 {snapshotId ?? currentSnapshotId}
               </span>
@@ -189,32 +189,29 @@ export const Dashboard = () => {
 
       <div className="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 lg:grid-cols-4">
         <InfoCard
-          title="Current Temperature"
+          title="Temperatura Atual"
           main={`${current.temperature.toFixed(1)}°C`}
-          lines={[`Feels like: ${current.feelsLike.toFixed(1)}°C`]}
+          lines={[`Sensação térmica: ${current.feelsLike.toFixed(1)}°C`]}
         />
 
         <InfoCard
-          title="Relative Humidity"
+          title="Umidade Relativa"
           main={`${current.humidity}%`}
-          lines={[`Dew point: ${dewPointText}`]}
+          lines={[`Ponto de orvalho: ${dewPointText}`]}
         />
 
         <InfoCard
-          title="Wind"
+          title="Vento"
           main={`${current.windSpeed?.toFixed(1) ?? '-'} m/s`}
-          lines={[
-            `Direction: ${current.windDeg}°`,
-            `Clouds: ${current.clouds}%`,
-          ]}
+          lines={[`Direção: ${current.windDeg}°`, `Nuvens: ${current.clouds}%`]}
         />
 
         <InfoCard
-          title="UV Index & Rain"
+          title="Índice UV & Chuva"
           main={`UVI: ${uviText}`}
           lines={[
-            `Rain last hour: ${rainLastHourText} mm`,
-            `Rain probability now: ${rainProbabilityPercent}%`,
+            `Chuva na última hora: ${rainLastHourText} mm`,
+            `Probabilidade de chuva agora: ${rainProbabilityPercent}%`,
           ]}
         />
       </div>

@@ -36,8 +36,8 @@ export function PokemonDetail() {
     return (
       <StateMessage
         img="../../public/not-found-icon.png"
-        alt="Not Found Icon"
-        text="Pokémon not found"
+        alt="Ícone de não encontrado"
+        text="Pokémon não encontrado"
         color="text-[#6d6e71]"
       />
     )
@@ -59,7 +59,7 @@ export function PokemonDetail() {
     <div className="flex flex-col flex-1 h-full">
       <Link to="/pokemon" className="mb-4">
         <Button className="bg-[#156e6a] text-white hover:bg-[#115c58]">
-          <IconArrowLeft /> Go back
+          <IconArrowLeft /> Voltar
         </Button>
       </Link>
 
@@ -91,7 +91,7 @@ export function PokemonDetail() {
                 className="bg-[#156e6a] text-white hover:bg-[#115c58]"
                 onClick={() => handleRoar()}
               >
-                Roar <IconMicrophone />
+                Rugir <IconMicrophone />
               </Button>
             </div>
 
@@ -107,45 +107,45 @@ export function PokemonDetail() {
               <InfoBlock
                 minW={80}
                 upper={false}
-                label="Height"
+                label="Altura"
                 value={`${pokemon.height / 10} m`}
               />
               <InfoBlock
                 minW={80}
                 upper={false}
-                label="Weight"
+                label="Peso"
                 value={`${pokemon.weight / 10} kg`}
               />
               <InfoBlock
                 minW={80}
                 upper={false}
-                label="Baby"
-                value={species?.is_baby ? 'Yes' : 'No'}
+                label="Bebê"
+                value={species?.is_baby ? 'Sim' : 'Não'}
               />
               <InfoBlock
                 minW={80}
                 upper={false}
-                label="Legendary"
-                value={species?.is_legendary ? 'Yes' : 'No'}
+                label="Lendário"
+                value={species?.is_legendary ? 'Sim' : 'Não'}
               />
               <InfoBlock
                 minW={80}
                 upper={false}
-                label="Mythical"
-                value={species?.is_mythical ? 'Yes' : 'No'}
+                label="Mítico"
+                value={species?.is_mythical ? 'Sim' : 'Não'}
               />
             </div>
           </Card>
 
           <div className="my-4 w-full">
             <h3 className="font-bold text-[#156e6a] text-center text-lg mb-3">
-              Evolution chain
+              Cadeia evolutiva
             </h3>
             {chain.length > 1 ? (
               <PokemonChainList chain={chain} />
             ) : (
               <p className="font-bold text-[#156e6a] text-center opacity-60">
-                Unique Evolution
+                Evolução única
               </p>
             )}
           </div>
@@ -154,7 +154,7 @@ export function PokemonDetail() {
         <div className="flex-1">
           <Card className="p-6 h-full">
             <h2 className="text-2xl font-bold text-[#156e6a]">
-              Stats and Characteristics
+              Status e características
             </h2>
 
             <div className="flex flex-wrap gap-2">
@@ -176,7 +176,9 @@ export function PokemonDetail() {
               </div>
 
               <div className="flex-2">
-                <h3 className="font-bold text-[#156e6a] text-lg">Abilities</h3>
+                <h3 className="font-bold text-[#156e6a] text-lg">
+                  Habilidades
+                </h3>
                 <div className="flex flex-col gap-3 mt-2">
                   {abilities.map((ability) => {
                     const name =
@@ -185,7 +187,7 @@ export function PokemonDetail() {
                     const effect =
                       ability.effect_entries.find(
                         (e) => e.language.name === 'en',
-                      )?.short_effect || 'No description available'
+                      )?.short_effect || 'Nenhuma descrição disponível'
 
                     return (
                       <div
@@ -203,7 +205,7 @@ export function PokemonDetail() {
 
             <div>
               <h3 className="font-bold text-[#156e6a] text-lg text-center mb-4">
-                Types Effectiveness
+                Efetividade dos tipos
               </h3>
               <PokemonEffectivenessTable types={types} />
             </div>

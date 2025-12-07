@@ -37,19 +37,19 @@ export const TemperatureHourlyChart: React.FC<TemperatureHourlyChartProps> = ({
 
   return (
     <LineChart
-      title="Temperature per hour (next 12h)"
+      title="Temperatura por hora (next 12h)"
       data={chartData}
       xKey="time"
       lines={[
         {
           dataKey: 'temperature',
-          name: 'Temperature (°C)',
+          name: 'Temperatura (°C)',
           stroke: PRIMARY,
           // fill: 'rgba(37, 169, 224, 0.25)',
         },
         {
           dataKey: 'feelsLike',
-          name: 'Feels like (°C)',
+          name: 'Sensação térmica (°C)',
           stroke: SECONDARY,
           strokeDasharray: '4 4',
           // fill: 'rgba(249, 115, 22, 0.15)',

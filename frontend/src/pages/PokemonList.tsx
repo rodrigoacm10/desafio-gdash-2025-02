@@ -20,7 +20,9 @@ export function PokemonList() {
   return (
     <div className="flex flex-col flex-1 h-full">
       <p className="text-3xl font-bold text-[#156e6a]">Pokémons</p>
-      <p className="text-accent-foreground mb-6">List of registered Pokémons</p>
+      <p className="text-accent-foreground mb-6">
+        Lista de Pokémons registrados
+      </p>
 
       <div className="w-full flex justify-end items-center my-6">
         <PokemonSearch redirectToHome={false} />
@@ -60,7 +62,7 @@ const HandleState = ({
     return (
       <div className="flex-1 flex items-center justify-center flex-col gap-4">
         <LoadingIcon />
-        <p className="text-gray-600 font-semibold">Loading Pokémons...</p>
+        <p className="text-gray-600 font-semibold">Carregando Pokémons...</p>
       </div>
     )
   }
@@ -69,8 +71,8 @@ const HandleState = ({
     return (
       <StateMessage
         img="../../public/error-icon.png"
-        alt="Error Icon"
-        text="Error loading Pokémons"
+        alt="Ícone de erro"
+        text="Erro ao carregar Pokémons"
         color="text-[#a40000]"
       />
     )
@@ -80,8 +82,8 @@ const HandleState = ({
     return (
       <StateMessage
         img="../../public/not-found-icon.png"
-        alt="Not Found Icon"
-        text="No Pokémon found"
+        alt="Ícone não encontrado"
+        text="Nenhum Pokémon encontrado"
         color="text-[#6d6e71]"
       />
     )
@@ -94,8 +96,8 @@ const HandleState = ({
   return (
     <StateMessage
       img="../../public/error-icon.png"
-      alt="Error Icon"
-      text="Unexpected error"
+      alt="Ícone de erro"
+      text="Erro inesperado"
       color="text-[#a40000]"
     />
   )
