@@ -66,19 +66,22 @@ Docker Compose
 
 #### 2. Variáveis de ambiente
 
-Na raiz de cada serviço existe um arquivo:
+Na raiz do projeto e em cada serviço existe um arquivo:
 
 ```
 .env.example
 ```
 
-Execute esse comando para copiar todos os .env.example criar um .env com todos os dados preenchidos:
+Para criar o .env que o Docker Compose utiliza
 
 ```
-cp backend/.env.example backend/.env && \
-cp collector/.env.example collector/.env && \
-cp worker/.env.example worker/.env && \
-cp frontend/.env.example frontend/.env
+cp .env.example .env
+```
+
+caso queira que os insights de IA funcionem, é necessário criar uma api key da openai e substiuir nessa env, porém o sistema funciona normalmente sem ela
+
+```
+OPENAI_API_KEY=YOUR_API_KEY
 ```
 
 #### 3. Subindo tudo com Docker Compose
@@ -86,7 +89,9 @@ cp frontend/.env.example frontend/.env
 Na raiz do projeto:
 
 ```
+
 docker compose up --build
+
 ```
 
 ##### Isso deve subir:
@@ -120,35 +125,54 @@ Use esse usuário para:
 
 #### Rodar serviços individualmente (modo dev)
 
+Execute esse comando para copiar todos os .env.example e criar um .env com todos os dados preenchidos:
+
+```
+
+cp backend/.env.example backend/.env && \
+cp collector/.env.example collector/.env && \
+cp worker/.env.example worker/.env && \
+cp frontend/.env.example frontend/.env
+
+```
+
 ##### Backend
 
 ```
+
 cd backend
 npm install
 npm run start:dev
+
 ```
 
 ##### Frontend
 
 ```
+
 cd frontend
 npm install
 npm run dev
+
 ```
 
 ##### Collector
 
 ```
+
 cd collector
 pip install -r requirements.txt
 python main.py
+
 ```
 
 ##### Worker
 
 ```
+
 cd worker
 go run .
+
 ```
 
 ---
@@ -212,11 +236,12 @@ A solução é composta por quatro serviços principais que se comunicam de form
 O diagrama abaixo resume o fluxo de dados:
 
 ```
+
 OpenWeather → Collector (Python) → RabbitMQ → Worker (Go) → API (NestJS) → MongoDB
-                                                              ↓
-                                                          OpenAI (IA)
-                                                              ↓
-                                                         Frontend (React)
+↓
+OpenAI (IA)
+↓
+Frontend (React)
 
 ```
 
@@ -257,74 +282,76 @@ OpenWeather → Collector (Python) → RabbitMQ → Worker (Go) → API (NestJS)
 Os snapshots climáticos são normalizados pela API seguindo a estrutura WeatherSnapshot:
 
 ```
+
 {
-  "provider": "openweather",
-  "type": "snapshot",
-  "location": {
-    "city": "Recife",
-    "country": "BR",
-    "lat": -8.0539,
-    "lon": -34.8811,
-    "timezone": "America/Recife",
-    "timezoneOffset": -10800
-  },
-  "fetchedAt": "2025-11-22T14:17:37.727822+00:00",
-  "current": {
-    "timestamp": "2025-11-22T14:17:28+00:00",
-    "temperature": 29.02,
-    "feelsLike": 32.77,
-    "humidity": 70,
-    "pressure": 1014,
-    "dewPoint": 22.99,
-    "uvi": 12.48,
-    "clouds": 40,
-    "visibility": 10000,
-    "windSpeed": 5.14,
-    "windDeg": 70,
-    "rainLastHour": 0,
-    "rainProbability": 0,
-    "condition": {
-      "id": 802,
-      "main": "Clouds",
-      "description": "scattered clouds",
-      "icon": "03d"
-    }
-  },
-  "hourly": [
-    {
-      "timestamp": "2025-11-22T14:00:00+00:00",
-      "temperature": 29.02,
-      "feelsLike": 32.77,
-      "humidity": 70,
-      "pressure": 1014,
-      "uvi": 12.48,
-      "rainProbability": 0.24,
-      "condition": {
-        "id": 802,
-        "main": "Clouds",
-        "description": "scattered clouds"
-      }
-    }
-    // ...
-  ],
-  "daily": [
-    {
-      "date": "2025-11-22",
-      "tempMin": 25.58,
-      "tempMax": 29.47,
-      "humidity": 70,
-      "uvi": 12.63,
-      "rainProbability": 1,
-      "rainAmount": 1.01,
-      "condition": {
-        "id": 500,
-        "main": "Rain",
-        "description": "light rain"
-      }
-    }
-    // ...
-  ]
+"provider": "openweather",
+"type": "snapshot",
+"location": {
+"city": "Recife",
+"country": "BR",
+"lat": -8.0539,
+"lon": -34.8811,
+"timezone": "America/Recife",
+"timezoneOffset": -10800
+},
+"fetchedAt": "2025-11-22T14:17:37.727822+00:00",
+"current": {
+"timestamp": "2025-11-22T14:17:28+00:00",
+"temperature": 29.02,
+"feelsLike": 32.77,
+"humidity": 70,
+"pressure": 1014,
+"dewPoint": 22.99,
+"uvi": 12.48,
+"clouds": 40,
+"visibility": 10000,
+"windSpeed": 5.14,
+"windDeg": 70,
+"rainLastHour": 0,
+"rainProbability": 0,
+"condition": {
+"id": 802,
+"main": "Clouds",
+"description": "scattered clouds",
+"icon": "03d"
 }
+},
+"hourly": [
+{
+"timestamp": "2025-11-22T14:00:00+00:00",
+"temperature": 29.02,
+"feelsLike": 32.77,
+"humidity": 70,
+"pressure": 1014,
+"uvi": 12.48,
+"rainProbability": 0.24,
+"condition": {
+"id": 802,
+"main": "Clouds",
+"description": "scattered clouds"
+}
+}
+// ...
+],
+"daily": [
+{
+"date": "2025-11-22",
+"tempMin": 25.58,
+"tempMax": 29.47,
+"humidity": 70,
+"uvi": 12.63,
+"rainProbability": 1,
+"rainAmount": 1.01,
+"condition": {
+"id": 500,
+"main": "Rain",
+"description": "light rain"
+}
+}
+// ...
+]
+}
+
 ```
 
 #### Esse modelo é otimizado para:
@@ -339,42 +366,44 @@ Os snapshots climáticos são normalizados pela API seguindo a estrutura Weather
 Os insights de IA são gerados a partir do último WeatherSnapshot utilizando OpenAI e persistidos como WeatherInsight:
 
 ```
+
 {
-  "id": "69341f9b79f8f3f86d33c9e6",
-  "snapshotId": "693393c9c075e1a8b8d9dbff",
-  "summary": "Clima em Recife apresenta temperaturas elevadas e alta umidade...",
-  "alerts": [
-    {
-      "type": "chuva_leve",
-      "description": "Previsão de chuvas leves persistentes durante o dia...",
-      "severity": "medium",
-      "icon": "rain_light"
-    },
-    {
-      "type": "uv_alto",
-      "description": "Índice UV atinge valores elevados...",
-      "severity": "high",
-      "icon": "uv_high"
-    }
-  ],
-  "metrics": {
-    "comfortIndex": 55,
-    "trendTemperature": "estável",
-    "trendRain": "aumentando"
-  },
-  "insights": [
-    {
-      "title": "Temperatura e Umidade",
-      "description": "Temperaturas diurnas mantêm-se elevadas..."
-    },
-    {
-      "title": "Previsão de Chuvas",
-      "description": "Chuvas leves são esperadas principalmente..."
-    }
-    // ...
-  ],
-  "createdAt": "2025-12-06T12:20:43.432Z"
+"id": "69341f9b79f8f3f86d33c9e6",
+"snapshotId": "693393c9c075e1a8b8d9dbff",
+"summary": "Clima em Recife apresenta temperaturas elevadas e alta umidade...",
+"alerts": [
+{
+"type": "chuva_leve",
+"description": "Previsão de chuvas leves persistentes durante o dia...",
+"severity": "medium",
+"icon": "rain_light"
+},
+{
+"type": "uv_alto",
+"description": "Índice UV atinge valores elevados...",
+"severity": "high",
+"icon": "uv_high"
 }
+],
+"metrics": {
+"comfortIndex": 55,
+"trendTemperature": "estável",
+"trendRain": "aumentando"
+},
+"insights": [
+{
+"title": "Temperatura e Umidade",
+"description": "Temperaturas diurnas mantêm-se elevadas..."
+},
+{
+"title": "Previsão de Chuvas",
+"description": "Chuvas leves são esperadas principalmente..."
+}
+// ...
+],
+"createdAt": "2025-12-06T12:20:43.432Z"
+}
+
 ```
 
 #### No backend, um use case dedicado:
@@ -455,3 +484,7 @@ Os insights de IA são gerados a partir do último WeatherSnapshot utilizando Op
 - [x] Logs e tratamento de erros básicos em cada serviço
 
 ---
+
+```
+
+```
